@@ -1055,16 +1055,6 @@
       line-height: 1.35;
     }
 
-    .dialog-help {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 16px;
-      margin-top: 28px;
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 10px;
-      font-weight: 600;
-    }
-
     .gallery {
       display: grid;
       min-width: 0;
@@ -1121,6 +1111,12 @@
       transform: translateY(-50%);
       transition: background-color 180ms ease, transform 180ms ease;
       backdrop-filter: blur(12px);
+    }
+
+    .gallery-arrow span {
+      display: block;
+      line-height: 1;
+      transform: translateY(-1px);
     }
 
     .gallery-arrow:hover {
@@ -1226,6 +1222,33 @@
       align-self: center;
     }
 
+    .next-back {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 24px;
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: rgba(248, 251, 255, 0.56);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 180ms ease, transform 180ms var(--ease);
+    }
+
+    .next-back:hover {
+      color: #ffffff;
+      transform: translateX(-3px);
+    }
+
+    .next-back:active {
+      transform: translateX(-1px);
+    }
+
     .next-copy p:not(.screen-eyebrow) {
       max-width: 48ch;
       margin: 24px 0 0;
@@ -1264,39 +1287,6 @@
       color: rgba(248, 251, 255, 0.7);
       font-size: 13px;
       line-height: 1.6;
-    }
-
-    .roadmap-detail {
-      min-width: 0;
-    }
-
-    .playground-button {
-      appearance: none;
-      display: inline-flex;
-      min-height: 38px;
-      align-items: center;
-      gap: 8px;
-      margin-top: 14px;
-      padding: 0 14px;
-      border: 1px solid rgba(255, 224, 0, 0.72);
-      border-radius: 9px;
-      background: rgba(255, 224, 0, 0.08);
-      color: var(--yellow);
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-      transition: background-color 180ms ease, color 180ms ease, transform 180ms var(--ease);
-    }
-
-    .playground-button:hover {
-      background: var(--yellow);
-      color: #080808;
-      transform: translateY(-2px);
-    }
-
-    .playground-button:active {
-      transform: translateY(1px) scale(0.985);
     }
 
     .suggestion-dialog {
@@ -1653,10 +1643,6 @@
         align-self: start;
       }
 
-      .dialog-help {
-        margin-top: 18px;
-      }
-
       .journey-next {
         position: relative;
         right: auto;
@@ -1947,7 +1933,7 @@
           <div class="overview-copy">
             <p class="screen-eyebrow">Introducing Rae</p>
             <h1 id="overview-title"><span>AI-powered Business</span><span>Enablement Ecosystem</span></h1>
-            <p class="overview-summary">Rae gives CelcomDigi sales, marketing, and product teams one connected place to research, understand buyers, create proposals, practise, and follow up.</p>
+            <p class="overview-summary">Rae offers CelcomDigi sales, marketing, and product teams one connected, GTM intelligence layer to research prospects, understand buyers, create proposals, practise, and follow up with the help of AI.</p>
             <div class="button-row">
               <button class="deck-button" type="button" data-go-screen="journey">Discover the journey <span aria-hidden="true">↓</span></button>
             </div>
@@ -2027,12 +2013,12 @@
             <aside class="impact" aria-labelledby="impact-label">
               <p class="impact-label" id="impact-label">Relevant impact</p>
               <div class="impact-item">
-                <strong class="impact-value" id="impact-value-1">5,000+</strong>
-                <span class="impact-copy" id="impact-copy-1">conversations powered by Rae across live sales work</span>
+                <strong class="impact-value" id="impact-value-1">Cited sources</strong>
+                <span class="impact-copy" id="impact-copy-1">every answer references relevant public and internal sources</span>
               </div>
               <div class="impact-item">
-                <strong class="impact-value" id="impact-value-2">2,000+</strong>
-                <span class="impact-copy" id="impact-copy-2">hours returned to sales workflows</span>
+                <strong class="impact-value" id="impact-value-2">500+ pieces</strong>
+                <span class="impact-copy" id="impact-copy-2">of custom analyst research available across Rae</span>
               </div>
             </aside>
           </section>
@@ -2047,12 +2033,18 @@
       <section class="deck-screen next-screen" id="next" data-screen="next" aria-labelledby="next-title" aria-hidden="true">
         <div class="screen-shell next-layout">
           <div class="next-copy">
+            <button class="next-back" type="button" data-go-screen="journey">
+              <span aria-hidden="true">←</span>
+              Return to journey
+            </button>
             <p class="screen-eyebrow">What’s next</p>
             <h2 id="next-title">Built with the teams who use it.</h2>
             <p>Rae keeps evolving around real sales work. The next chapter brings account intelligence and customer collaboration closer together.</p>
             <div class="button-row">
               <a class="deck-button" href="https://rae.salesrechargekit.ai" target="_blank" rel="noopener noreferrer">Try Rae <span aria-hidden="true">↗</span></a>
-              <button class="deck-button secondary" type="button" data-go-screen="journey">Return to journey <span aria-hidden="true">↑</span></button>
+              <button class="deck-button secondary" id="product-playground-button" type="button" aria-haspopup="dialog">
+                Suggest a feature <span aria-hidden="true">↗</span>
+              </button>
             </div>
           </div>
 
@@ -2067,12 +2059,7 @@
             </article>
             <article class="roadmap-item">
               <h3>Product Playground</h3>
-              <div class="roadmap-detail">
-                <p>Test early ideas, share what your team needs, and help shape the next Rae workflow.</p>
-                <button class="playground-button" id="product-playground-button" type="button" aria-haspopup="dialog">
-                  Suggest a feature <span aria-hidden="true">↗</span>
-                </button>
-              </div>
+              <p>Test early ideas, share what your team needs, and help shape the next Rae workflow.</p>
             </article>
           </div>
         </div>
@@ -2100,15 +2087,11 @@
           <p id="dialog-copy">Bring account context, CelcomDigi knowledge, sources, and useful follow-up questions into the same conversation.</p>
           <p class="solution-label">Solution in view</p>
           <p class="dialog-solution" id="gallery-caption">Ask Rae with live account and product context.</p>
-          <div class="dialog-help" aria-label="Gallery keyboard controls">
-            <span>← → Browse</span>
-            <span>Esc Close</span>
-          </div>
         </section>
 
         <section class="gallery" aria-label="Feature screenshots">
           <div class="gallery-main">
-            <button class="gallery-arrow gallery-prev" id="gallery-prev" type="button" aria-label="Previous screenshot">←</button>
+            <button class="gallery-arrow gallery-prev" id="gallery-prev" type="button" aria-label="Previous screenshot"><span aria-hidden="true">←</span></button>
             <div class="gallery-frame">
               <div class="mockup-bar" aria-hidden="true">
                 <span class="window-dots"><i></i><i></i><i></i></span>
@@ -2117,7 +2100,7 @@
               </div>
               <img class="gallery-image" id="gallery-image" src="assets/screens/03-rae-chat-sending-and-receiving-messages.png" alt="Rae Chat conversation screen">
             </div>
-            <button class="gallery-arrow gallery-next" id="gallery-next" type="button" aria-label="Next screenshot">→</button>
+            <button class="gallery-arrow gallery-next" id="gallery-next" type="button" aria-label="Next screenshot"><span aria-hidden="true">→</span></button>
           </div>
           <div class="gallery-meta">
             <span class="gallery-counter" id="gallery-counter">01 / 04</span>
@@ -2202,69 +2185,85 @@
         credit: "Izuddin Helmi Adnan",
         creditUrl: "https://unsplash.com/photos/4gLtZI213Dk",
         impacts: [
-          { value: "5,000+", copy: "conversations powered by Rae across live sales work" },
-          { value: "2,000+", copy: "hours returned to sales workflows" }
+          { value: "Cited sources", copy: "every answer references relevant public and internal sources" },
+          { value: "500+ pieces", copy: "of custom analyst research available across Rae" }
         ],
         gallery: [
           {
             src: "assets/screens/03-rae-chat-sending-and-receiving-messages.png",
             alt: "Rae Chat conversation screen",
-            caption: "Ask Rae with live account and product context."
+            title: "Ask with the deal already in view.",
+            copy: "Start a live conversation with Rae using the customer, opportunity, and CelcomDigi product context that matters to the work in front of you.",
+            solution: "Turn account context into a more relevant first question."
           },
           {
             src: "assets/screens/04-rae-chat-sources-and-suggested-follow-ups.png",
             alt: "Rae Chat sources and suggested follow-up questions",
-            caption: "See grounded sources and move directly into the next question."
+            title: "Keep every answer grounded.",
+            copy: "Rae brings supporting sources and useful follow-up prompts into the response, so teams can validate the detail and keep their research moving.",
+            solution: "Move from a sourced answer directly into the next useful question."
           },
           {
             src: "assets/screens/05-rae-chat-chat-history.png",
             alt: "Rae Chat conversation history",
-            caption: "Return to previous research without rebuilding the context."
+            title: "Pick up the work without starting over.",
+            copy: "Conversation history preserves the thread behind the work, making it easy to return to earlier research, decisions, and questions when a deal moves on.",
+            solution: "Resume the research with its context intact."
           },
           {
             src: "assets/screens/17-rae-news-feed.png",
             alt: "Rae News Feed with current account and industry updates",
-            caption: "Keep relevant account and market signals close to the conversation."
+            title: "Bring fresh signals into the room.",
+            copy: "The news feed keeps account and industry developments close to the conversation, giving sellers timely context before they decide what to ask or share next.",
+            solution: "Connect current market signals to the customer conversation."
           }
         ]
       },
       {
         name: "Qualify",
-        title: "Understand who you are selling to.",
-        copy: "Persona intelligence turns a contact into useful buyer context: priorities, likely objections, pain points, and the angle that should shape the conversation.",
-        featureLabel: "Explore Persona Intelligence",
-        featureTitle: "Build the message around the buyer.",
-        featureCopy: "Move beyond a name and title with practical context for the pitch, proposal, simulation, and follow-up.",
-        image: "assets/screens/18-sales-simulator-building-persona.png",
-        imageAlt: "Rae building a customer persona for a sales simulation",
+        title: "Know the account before you engage.",
+        copy: "Connected persona data, curated account research, and actionable recommendations help teams qualify opportunities and build a clearer account roadmap.",
+        featureLabel: "Explore Account Intelligence",
+        featureTitle: "Qualify with a connected account view.",
+        featureCopy: "Bring personas, Salesforce opportunity context, curated research, and recommended next steps into one qualification workflow.",
+        image: "assets/screens/31-persona-opportunity-dashboard.png",
+        imageAlt: "Rae persona dashboard showing synced stakeholders and opportunity context",
         background: "assets/atmosphere/qualify.jpg",
         backgroundPosition: "50% 68%",
         credit: "nikominimal",
         creditUrl: "https://unsplash.com/photos/Ca2x-ztfy6Q",
         impacts: [
-          { value: "300+", copy: "users across CelcomDigi Enterprise Business" },
-          { value: "One view", copy: "of buyer priorities, pain points, and engagement context" }
+          { value: "100+ accounts", copy: "with research delivered for key target organisations" },
+          { value: "Connected intelligence", copy: "linking personas, Salesforce opportunity context, and recommendations" }
         ],
         gallery: [
           {
-            src: "assets/screens/10-rae-profile-button.png",
-            alt: "Rae Profile access from the platform",
-            caption: "Move from account research into the profile layer."
+            src: "assets/screens/31-persona-opportunity-dashboard.png",
+            alt: "Persona dashboard listing engaged stakeholders and their account and opportunity details",
+            title: "Keep every persona and opportunity in sync.",
+            copy: "Bring every stakeholder a user has engaged with into one persona-level dashboard, together with their needs and the opportunities taking shape around them. Salesforce integration keeps customer and opportunity context aligned as the account develops.",
+            solution: "Maintain one current view of the people, needs, and opportunities behind the account."
           },
           {
-            src: "assets/screens/11-rae-profile-my-account.png",
-            alt: "Rae Profile account information screen",
-            caption: "Keep useful seller and account context in one place."
+            src: "assets/screens/32-curated-account-research-library.png",
+            alt: "Curated Rae research library showing account profiles for target organisations",
+            title: "Go deeper on the accounts that matter.",
+            copy: "Use a curated library of account profiles, sector intelligence, and sales-conversation research to investigate target organisations beyond the surface. Relevant material stays organised and easy to revisit as qualification progresses.",
+            solution: "Find focused account intelligence without rebuilding the research from scratch."
           },
           {
-            src: "assets/screens/18-sales-simulator-building-persona.png",
-            alt: "Rae Sales Simulator persona builder",
-            caption: "Build a realistic stakeholder persona from the deal context."
+            src: "assets/screens/33-account-research-detail.png",
+            alt: "Detailed Rae account research with an executive summary and structured navigation",
+            title: "Explore the research your way.",
+            copy: "Read the complete account research as a structured briefing or access the same intelligence conversationally through Rae Chat. Teams can move from an executive overview into the detail while keeping questions anchored to the research.",
+            solution: "Make deep account intelligence readable, searchable, and accessible through chat."
           },
           {
-            src: "assets/screens/19-sales-simulator-additional-inputs.png",
-            alt: "Additional persona and simulation inputs",
-            caption: "Add the detail that makes the buyer conversation specific."
+            src: "assets/screens/34-account-roadmap-recommendations.png",
+            alt: "Account research showing actionable engagement recommendations and commercial approaches",
+            title: "Turn research into an account roadmap.",
+            copy: "Move beyond background information with practical engagement approaches, opportunity areas, and recommended next steps. Rae connects the research to actions users can take when shaping the account plan and preparing the next customer conversation.",
+            solution: "Use actionable recommendations to build a clearer path through the account."
           }
         ]
       },
@@ -2282,34 +2281,44 @@
         credit: "Sebastian Schuster",
         creditUrl: "https://unsplash.com/photos/6nNVADip2Jc",
         impacts: [
-          { value: "400+", copy: "proposals generated from live deal context" },
-          { value: "Multi-million", copy: "TCV supported across the sales pipeline" }
+          { value: "~2 minutes", copy: "typical time to generate a structured proposal draft" },
+          { value: "450+ proposals", copy: "generated so far through Rae" }
         ],
         gallery: [
           {
             src: "assets/screens/23-proposal-generator-initial-input-gathering.png",
             alt: "Proposal Generator gathering the initial inputs",
-            caption: "Start with the account, opportunity, and supporting files."
+            title: "Begin with the full opportunity.",
+            copy: "Gather the account, opportunity, product, and supporting-file inputs up front so the proposal begins from the same context the customer conversation has already established.",
+            solution: "Create a proposal brief built on the real deal context."
           },
           {
             src: "assets/screens/24-proposal-generator-generation-steps-indicator.png",
             alt: "Proposal Generator steps indicator",
-            caption: "Follow a clear, visible generation process."
+            title: "See the work taking shape.",
+            copy: "A clear sequence makes the generation process legible, letting teams understand what Rae is assembling and maintain confidence as the proposal moves from inputs to draft.",
+            solution: "Make proposal generation feel visible and controlled."
           },
           {
             src: "assets/screens/25-proposal-generator-generating-progress-indicator.png",
             alt: "Proposal Generator progress screen",
-            caption: "Stay informed while Rae assembles the proposal."
+            title: "Stay informed while Rae builds.",
+            copy: "Progress states show where the work is in the process, keeping the seller informed while Rae turns the selected context into a structured, branded proposal.",
+            solution: "Keep the team oriented while the draft is assembled."
           },
           {
             src: "assets/screens/26-proposal-generator-proposal-generated-on-canvas.png",
             alt: "Generated proposal on the editing canvas",
-            caption: "Refine the complete draft directly on the canvas."
+            title: "Refine the draft where it lives.",
+            copy: "Once the proposal is generated, the full draft is ready on the canvas for review, edits, and natural-language refinement before it is shared with the customer.",
+            solution: "Shape a complete, customer-ready proposal in one place."
           },
           {
             src: "assets/screens/27-proposal-generator-download-in-various-formats.png",
             alt: "Proposal export format options",
-            caption: "Export the result to the format the conversation needs."
+            title: "Send the right version forward.",
+            copy: "Export options make it simple to take the approved proposal into the format the customer or internal team needs, without rebuilding the work in another tool.",
+            solution: "Carry the finished proposal into the next conversation."
           }
         ]
       },
@@ -2327,34 +2336,44 @@
         credit: "Zaneta Kuncara",
         creditUrl: "https://unsplash.com/photos/8NYGok7TO6A",
         impacts: [
-          { value: "Persona-led", copy: "practice for CFO, procurement, IT, and business conversations" },
-          { value: "Clear feedback", copy: "through a structured scorecard after every simulation" }
+          { value: "Realistic rehearsal", copy: "with persona-led practice grounded in the deal context" },
+          { value: "Actionable coaching", copy: "through targeted feedback after each simulation" }
         ],
         gallery: [
           {
             src: "assets/screens/18-sales-simulator-building-persona.png",
             alt: "Sales Simulator persona builder",
-            caption: "Build the customer persona you expect to meet."
+            title: "Set the room before you practise.",
+            copy: "Build the customer persona you expect to meet, using the role, priorities, and commercial context that will shape how the conversation should unfold.",
+            solution: "Practise against a buyer who reflects the real meeting."
           },
           {
             src: "assets/screens/19-sales-simulator-additional-inputs.png",
             alt: "Sales Simulator additional context inputs",
-            caption: "Add the deal detail that makes the practice useful."
+            title: "Bring the deal into the rehearsal.",
+            copy: "Add the account detail, offer, and meeting conditions that make the practice specific, so the simulation challenges the message a seller is actually preparing to deliver.",
+            solution: "Make practice reflect the commercial reality."
           },
           {
             src: "assets/screens/20-sales-simulator-simulation.png",
             alt: "Sales Simulator conversation in progress",
-            caption: "Practise the pitch and respond to realistic objections."
+            title: "Test the pitch under pressure.",
+            copy: "Run the conversation in a safe setting, respond to realistic questions and objections, and find the gaps in the story before the customer is in the room.",
+            solution: "Rehearse the moments that can change the meeting."
           },
           {
             src: "assets/screens/21-sales-simulator-scoring-pt1.png",
             alt: "First section of the Sales Simulator scorecard",
-            caption: "Review a structured assessment of the conversation."
+            title: "See what landed in the conversation.",
+            copy: "The scorecard turns the practice into a structured review, giving sellers a clear view of the strengths and weak points across the first part of the exchange.",
+            solution: "Turn a rehearsal into concrete coaching insight."
           },
           {
             src: "assets/screens/22-sales-simulator-scoring-pt2.png",
             alt: "Second section of the Sales Simulator scorecard",
-            caption: "Use specific feedback to sharpen the next attempt."
+            title: "Carry specific feedback into the next attempt.",
+            copy: "The remaining scorecard detail makes the improvement path actionable, so teams can adjust their response, value story, and meeting plan before trying again.",
+            solution: "Use focused feedback to improve the next conversation."
           }
         ]
       },
@@ -2372,29 +2391,37 @@
         credit: "Alim",
         creditUrl: "https://unsplash.com/photos/FO8HzgNQlB0",
         impacts: [
-          { value: "400+", copy: "bespoke content pieces created for sales demand" },
-          { value: "Trackable", copy: "customer follow-up that keeps information and next steps together" }
+          { value: "Visible engagement", copy: "across opens, viewing time, questions, and page-level activity" },
+          { value: "Grounded discovery", copy: "with customer answers tied to shared and supporting documents" }
         ],
         gallery: [
           {
+            src: "assets/screens/28-docuchat-document-dashboard.png",
+            alt: "DocuChat dashboard showing uploaded documents, shares, opens, conversations, and actions",
+            title: "Manage every customer document in one place.",
+            copy: "Upload documents, organise the complete library, and turn each file into a trackable link ready to share with customers. The dashboard keeps documents, shares, opens, conversations, and actions visible in one working view.",
+            solution: "Create shareable customer experiences and track them from one dashboard."
+          },
+          {
+            src: "assets/screens/29-docuchat-grounded-customer-chat.png",
+            alt: "Customer viewing a shared document and asking Rae grounded questions about its content",
+            title: "Give customers answers grounded in your content.",
+            copy: "Customers can explore the shared document and ask Rae questions as they read. Every answer stays grounded in the document and approved supporting material—such as FAQs and technical product specifications—so the conversation remains tied to trusted source content.",
+            solution: "Let customers find reliable answers inside the document, whenever they need them."
+          },
+          {
+            src: "assets/screens/30-docuchat-engagement-analytics.png",
+            alt: "DocuChat analytics showing document activity, opens, viewing time, and page-level engagement",
+            title: "Turn customer activity into engagement signals.",
+            copy: "See when a document is opened, how long customers spend with it, which pages hold attention, and what questions they ask. These signals reveal customer interest, expose gaps in the content, and help sellers follow up with greater relevance.",
+            solution: "Use viewing and conversation analytics to guide the next customer action."
+          },
+          {
             src: "assets/screens/14-rae-profile-digital-profile.png",
             alt: "Completed Rae Digital Profile",
-            caption: "Present a polished, customer-ready digital profile."
-          },
-          {
-            src: "assets/screens/15-rae-profile-digital-profile-editing.png",
-            alt: "Editing a Rae Digital Profile",
-            caption: "Keep the shared story accurate and current."
-          },
-          {
-            src: "assets/screens/16-rae-profile-digital-profile-sharing.png",
-            alt: "Rae Digital Profile sharing controls",
-            caption: "Share the profile directly with the customer."
-          },
-          {
-            src: "assets/screens/27-proposal-generator-download-in-various-formats.png",
-            alt: "Downloading a proposal in different formats",
-            caption: "Pair the follow-up with the right proposal format."
+            title: "Present a story worth sharing.",
+            copy: "A finished digital profile gives the customer a polished, easy-to-navigate view of the team, expertise, and information that supports the next step in the relationship.",
+            solution: "Give customers a clear, professional place to return to."
           }
         ]
       }
@@ -2562,12 +2589,12 @@
       const item = stage.gallery[activeGalleryIndex];
 
       dialogStep.textContent = stage.name;
-      dialogTitle.textContent = stage.featureTitle;
-      dialogCopy.textContent = stage.featureCopy;
+      dialogTitle.textContent = item.title;
+      dialogCopy.textContent = item.copy;
       galleryStageLabel.textContent = stage.name;
       galleryImage.src = item.src;
       galleryImage.alt = item.alt;
-      galleryCaption.textContent = item.caption;
+      galleryCaption.textContent = item.solution;
       galleryCounter.textContent = `${String(activeGalleryIndex + 1).padStart(2, "0")} / ${String(stage.gallery.length).padStart(2, "0")}`;
 
       galleryThumbnails.replaceChildren();
@@ -2577,7 +2604,7 @@
 
         thumbnail.type = "button";
         thumbnail.className = "thumbnail";
-        thumbnail.setAttribute("aria-label", `Show screenshot ${index + 1}: ${galleryItem.caption}`);
+        thumbnail.setAttribute("aria-label", `Show screenshot ${index + 1}: ${galleryItem.title}`);
         thumbnail.setAttribute("aria-current", String(index === activeGalleryIndex));
         thumbnail.addEventListener("click", () => {
           activeGalleryIndex = index;
