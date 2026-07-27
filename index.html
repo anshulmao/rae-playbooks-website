@@ -97,19 +97,21 @@
     }
 
     .deck-topbar {
-      position: absolute;
-      z-index: 10;
+      position: fixed;
+      z-index: 20;
       top: 0;
       right: 0;
       left: 0;
       display: flex;
-      width: min(1480px, 100%);
-      min-height: 72px;
+      width: 100%;
+      min-height: calc(72px + env(safe-area-inset-top));
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      margin: 0 auto;
-      padding: 18px clamp(20px, 3.4vw, 54px);
+      padding: calc(14px + env(safe-area-inset-top)) max(clamp(20px, 3.4vw, 54px), env(safe-area-inset-right)) 14px max(clamp(20px, 3.4vw, 54px), env(safe-area-inset-left));
+      border-bottom: 1px solid rgba(207, 229, 255, 0.16);
+      background: #001247;
+      box-shadow: 0 12px 36px rgba(0, 6, 32, 0.24);
     }
 
     .deck-status {
@@ -183,7 +185,7 @@
       width: min(1480px, 100%);
       min-height: 100dvh;
       margin: 0 auto;
-      padding: clamp(92px, 12vh, 122px) clamp(20px, 3.4vw, 54px) clamp(28px, 4.5vh, 46px);
+      padding: calc(clamp(92px, 12vh, 122px) + env(safe-area-inset-top)) clamp(20px, 3.4vw, 54px) clamp(28px, 4.5vh, 46px);
     }
 
     .overview-screen::before,
@@ -469,7 +471,7 @@
       width: min(1480px, 100%);
       min-height: 100dvh;
       margin: 0 auto;
-      padding: clamp(86px, 10vh, 104px) clamp(20px, 3.4vw, 54px) clamp(18px, 2.4vh, 24px);
+      padding: calc(clamp(86px, 10vh, 104px) + env(safe-area-inset-top)) clamp(20px, 3.4vw, 54px) clamp(18px, 2.4vh, 24px);
     }
 
     .topbar {
@@ -495,6 +497,11 @@
 
     .brand .brand-rae {
       width: clamp(56px, 4.8vw, 68px);
+      box-sizing: content-box;
+      padding: 6px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      border-radius: 8px;
+      background: #f5f8fd;
     }
 
     .brand .brand-divider {
@@ -575,6 +582,9 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 46px rgba(0, 7, 33, 0.28);
       backdrop-filter: blur(18px);
       scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
     }
 
     .journey::-webkit-scrollbar {
@@ -598,6 +608,7 @@
       font-weight: 600;
       white-space: nowrap;
       transition: color 220ms ease, background-color 220ms ease, transform 220ms var(--ease);
+      scroll-snap-align: center;
     }
 
     .journey button:hover {
@@ -880,21 +891,6 @@
       font-size: 11px;
       line-height: 1.45;
       text-wrap: pretty;
-    }
-
-    .photo-credit {
-      position: absolute;
-      z-index: 3;
-      right: clamp(20px, 3.4vw, 54px);
-      bottom: 6px;
-      color: rgba(255, 255, 255, 0.38);
-      font-size: 9px;
-      text-decoration: none;
-      transition: color 180ms ease;
-    }
-
-    .photo-credit:hover {
-      color: rgba(255, 255, 255, 0.76);
     }
 
     :focus-visible {
@@ -1532,7 +1528,7 @@
 
       .screen-shell {
         min-height: 100dvh;
-        padding: 94px 20px 42px;
+        padding: calc(94px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(42px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
       }
 
       .overview-layout,
@@ -1563,7 +1559,7 @@
       .experience {
         display: block;
         min-height: 100dvh;
-        padding: 94px 20px 76px;
+        padding: calc(94px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
       }
 
       .topbar {
@@ -1625,15 +1621,6 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .photo-credit {
-        position: relative;
-        right: auto;
-        bottom: auto;
-        display: block;
-        margin: -26px 20px 10px;
-        text-align: right;
-      }
-
       .dialog-content {
         grid-template-columns: 1fr;
         overflow-y: auto;
@@ -1649,14 +1636,15 @@
         bottom: auto;
         display: flex;
         justify-content: flex-end;
-        margin: 22px 20px 0;
+        margin: 22px max(20px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
       }
     }
 
     @media (max-width: 620px) {
       .deck-topbar {
-        min-height: 66px;
-        padding: 14px;
+        min-height: calc(66px + env(safe-area-inset-top));
+        gap: 14px;
+        padding: calc(10px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
       }
 
       .deck-name {
@@ -1668,7 +1656,7 @@
       }
 
       .screen-shell {
-        padding: 88px 14px 34px;
+        padding: calc(88px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(34px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
       }
 
       .overview-layout {
@@ -1762,7 +1750,7 @@
       }
 
       .experience {
-        padding: 88px 14px 72px;
+        padding: calc(88px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(38px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
       }
 
       .topbar {
@@ -1770,7 +1758,8 @@
       }
 
       .brand .brand-rae {
-        width: 54px;
+        width: 50px;
+        padding: 5px 7px;
       }
 
       .brand .brand-divider {
@@ -1778,7 +1767,7 @@
       }
 
       .brand .brand-cdb {
-        width: 108px;
+        width: 102px;
       }
 
       .stage-count {
@@ -1800,6 +1789,7 @@
 
       .journey {
         border-radius: 10px;
+        scroll-padding-inline: 5px;
       }
 
       .journey button {
@@ -1886,6 +1876,32 @@
 
       .thumbnail {
         flex-basis: 92px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .brand {
+        gap: 8px;
+      }
+
+      .brand .brand-cdb {
+        width: 88px;
+      }
+
+      .deck-dots {
+        gap: 5px;
+      }
+
+      .impact {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .impact-label {
+        grid-column: auto;
+      }
+
+      .journey-next .deck-button {
+        width: 100%;
       }
     }
 
@@ -2027,7 +2043,6 @@
         <div class="journey-next">
           <button class="deck-button" type="button" data-go-screen="next">See what’s next <span aria-hidden="true">↓</span></button>
         </div>
-        <a class="photo-credit" id="photo-credit" href="https://unsplash.com/photos/4gLtZI213Dk" target="_blank" rel="noreferrer">Photo: Izuddin Helmi Adnan / Unsplash</a>
       </section>
 
       <section class="deck-screen next-screen" id="next" data-screen="next" aria-labelledby="next-title" aria-hidden="true">
@@ -2182,8 +2197,6 @@
         imageAlt: "Rae Chat showing grounded sources and suggested follow-up questions",
         background: "assets/atmosphere/research.jpg",
         backgroundPosition: "50% 54%",
-        credit: "Izuddin Helmi Adnan",
-        creditUrl: "https://unsplash.com/photos/4gLtZI213Dk",
         impacts: [
           { value: "Cited sources", copy: "every answer references relevant public and internal sources" },
           { value: "500+ pieces", copy: "of custom analyst research available across Rae" }
@@ -2230,8 +2243,6 @@
         imageAlt: "Rae persona dashboard showing synced stakeholders and opportunity context",
         background: "assets/atmosphere/qualify.jpg",
         backgroundPosition: "50% 68%",
-        credit: "nikominimal",
-        creditUrl: "https://unsplash.com/photos/Ca2x-ztfy6Q",
         impacts: [
           { value: "100+ accounts", copy: "with research delivered for key target organisations" },
           { value: "Connected intelligence", copy: "linking personas, Salesforce opportunity context, and recommendations" }
@@ -2278,8 +2289,6 @@
         imageAlt: "A proposal generated and ready to refine on the Rae canvas",
         background: "assets/atmosphere/propose.jpg",
         backgroundPosition: "50% 52%",
-        credit: "Sebastian Schuster",
-        creditUrl: "https://unsplash.com/photos/6nNVADip2Jc",
         impacts: [
           { value: "~2 minutes", copy: "typical time to generate a structured proposal draft" },
           { value: "450+ proposals", copy: "generated so far through Rae" }
@@ -2333,8 +2342,6 @@
         imageAlt: "A live practice conversation in Rae Sales Simulator",
         background: "assets/atmosphere/practise.jpg",
         backgroundPosition: "50% 50%",
-        credit: "Zaneta Kuncara",
-        creditUrl: "https://unsplash.com/photos/8NYGok7TO6A",
         impacts: [
           { value: "Realistic rehearsal", copy: "with persona-led practice grounded in the deal context" },
           { value: "Actionable coaching", copy: "through targeted feedback after each simulation" }
@@ -2388,8 +2395,6 @@
         imageAlt: "Sharing a Rae Digital Profile with a customer",
         background: "assets/atmosphere/share.jpg",
         backgroundPosition: "50% 52%",
-        credit: "Alim",
-        creditUrl: "https://unsplash.com/photos/FO8HzgNQlB0",
         impacts: [
           { value: "Visible engagement", copy: "across opens, viewing time, questions, and page-level activity" },
           { value: "Grounded discovery", copy: "with customer answers tied to shared and supporting documents" }
@@ -2444,7 +2449,6 @@
     const impactCopyOne = document.getElementById("impact-copy-1");
     const impactValueTwo = document.getElementById("impact-value-2");
     const impactCopyTwo = document.getElementById("impact-copy-2");
-    const photoCredit = document.getElementById("photo-credit");
     const featureDialog = document.getElementById("feature-dialog");
     const dialogClose = document.getElementById("dialog-close");
     const dialogStep = document.getElementById("dialog-step");
@@ -2522,8 +2526,6 @@
         impactCopyOne.textContent = stage.impacts[0].copy;
         impactValueTwo.textContent = stage.impacts[1].value;
         impactCopyTwo.textContent = stage.impacts[1].copy;
-        photoCredit.textContent = `Photo: ${stage.credit} / Unsplash`;
-        photoCredit.href = stage.creditUrl;
 
         stageButtons.forEach((button, buttonIndex) => {
           const isActive = buttonIndex === index;
