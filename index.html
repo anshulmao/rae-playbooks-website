@@ -120,6 +120,41 @@
       gap: 14px;
     }
 
+    .home-button {
+      appearance: none;
+      display: inline-flex;
+      min-height: 32px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      border: 1px solid rgba(218, 237, 255, 0.2);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.78);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      white-space: nowrap;
+      transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms var(--ease);
+    }
+
+    .home-button:hover {
+      border-color: rgba(255, 224, 0, 0.54);
+      background: rgba(255, 224, 0, 0.1);
+      color: #ffffff;
+      transform: translateX(-2px);
+    }
+
+    .home-button:active {
+      transform: translateX(-1px) scale(0.98);
+    }
+
+    .page[data-active-screen="overview"] .home-button {
+      display: none;
+    }
+
     .deck-name,
     .deck-count {
       color: rgba(255, 255, 255, 0.58);
@@ -1750,11 +1785,11 @@
       }
 
       .experience {
-        padding: calc(88px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(38px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+        padding: calc(78px + env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(38px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
       }
 
       .topbar {
-        margin-bottom: 28px;
+        margin-bottom: 14px;
       }
 
       .brand .brand-rae {
@@ -1905,6 +1940,41 @@
       }
     }
 
+    @media (max-width: 360px) {
+      .deck-topbar {
+        gap: 8px;
+        padding-right: max(10px, env(safe-area-inset-right));
+        padding-left: max(10px, env(safe-area-inset-left));
+      }
+
+      .brand {
+        gap: 7px;
+      }
+
+      .brand .brand-rae {
+        width: 44px;
+        padding: 4px 6px;
+      }
+
+      .brand .brand-divider {
+        height: 18px;
+      }
+
+      .brand .brand-cdb {
+        width: 72px;
+      }
+
+      .deck-status {
+        gap: 8px;
+      }
+
+      .home-button {
+        min-height: 30px;
+        padding: 0 8px;
+        font-size: 9px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -1934,6 +2004,7 @@
         <img class="brand-cdb" src="assets/6a5d9af170221493ca2e232e_CDB_White_Logo.png" alt="CelcomDigi Business">
       </a>
       <div class="deck-status" aria-label="Story navigation">
+        <button class="home-button" type="button" data-go-screen="overview" aria-label="Return to the Rae overview">← Home</button>
         <span class="deck-name" id="deck-name">Overview</span>
         <div class="deck-dots">
           <button class="deck-dot" type="button" data-go-screen="overview" aria-label="Show overview" aria-current="true"></button>
