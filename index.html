@@ -460,13 +460,12 @@
       object-position: center;
       opacity: 0;
       filter: saturate(0.72) contrast(1.04);
-      transform: scale(1.035);
+      transform: none;
       transition: opacity 620ms var(--ease), transform 1.2s var(--ease);
     }
 
     .background.active {
       opacity: 0.44;
-      transform: scale(1);
     }
 
     .page:not([data-active-screen="journey"]) .background {
