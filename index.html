@@ -1777,6 +1777,45 @@
         line-height: 1.35;
       }
 
+      .next-layout {
+        grid-template-columns: minmax(260px, 0.78fr) minmax(420px, 1.22fr);
+        gap: clamp(30px, 4vw, 58px);
+      }
+
+      .next-back {
+        margin-bottom: 14px;
+      }
+
+      .next-copy h2 {
+        max-width: 12ch;
+        font-size: clamp(34px, 4.4vw, 58px);
+      }
+
+      .next-copy p:not(.screen-eyebrow) {
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 1.48;
+      }
+
+      .roadmap {
+        width: auto;
+      }
+
+      .roadmap-item {
+        grid-template-columns: minmax(110px, 0.42fr) minmax(0, 1fr);
+        gap: 18px;
+        padding: clamp(12px, 2vh, 18px) 0;
+      }
+
+      .roadmap-item h3 {
+        font-size: clamp(18px, 1.8vw, 24px);
+      }
+
+      .roadmap-item p {
+        font-size: 11px;
+        line-height: 1.42;
+      }
+
       .topbar,
       .intro,
       .journey-wrap {
