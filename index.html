@@ -369,7 +369,6 @@
       background: rgba(3, 17, 57, 0.58);
       box-shadow: var(--shadow);
       backdrop-filter: blur(20px);
-      transform: rotate(1deg);
     }
 
     .overview-visual img {
@@ -389,7 +388,6 @@
       border-radius: 13px;
       background: rgba(1, 13, 47, 0.92);
       box-shadow: 0 20px 56px rgba(0, 6, 30, 0.42);
-      transform: rotate(-1deg);
     }
 
     .origin-note strong,
@@ -1699,7 +1697,7 @@
       }
     }
 
-    @media (min-width: 901px) and (max-height: 880px) {
+    @media (hover: hover) and (pointer: fine) and (max-height: 880px) {
       body {
         overflow: hidden;
       }
@@ -1730,7 +1728,7 @@
       }
 
       .overview-layout {
-        grid-template-columns: minmax(0, 0.98fr) minmax(360px, 1.02fr);
+        grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
         gap: clamp(28px, 4vw, 56px);
       }
 
@@ -1778,7 +1776,7 @@
       }
 
       .next-layout {
-        grid-template-columns: minmax(260px, 0.78fr) minmax(420px, 1.22fr);
+        grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
         gap: clamp(30px, 4vw, 58px);
       }
 
@@ -1832,7 +1830,7 @@
       }
 
       .stage-panel {
-        grid-template-columns: minmax(150px, 0.7fr) minmax(360px, 1.8fr) minmax(150px, 0.7fr);
+        grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.8fr) minmax(0, 0.7fr);
         gap: clamp(14px, 2vw, 24px);
       }
 
