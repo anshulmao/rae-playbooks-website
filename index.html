@@ -3,6 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Analytics (GA4) — replace G-XXXXXXXXXX with the campaign's Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-XXXXXXXXXX");
+  </script>
+
   <meta name="description" content="Rae is CelcomDigi Enterprise Business's AI-powered business enablement ecosystem, connecting research, qualification, proposals, practice, and customer follow-up.">
   <meta name="theme-color" content="#00144f">
   <meta property="og:title" content="Rae - AI-powered Business Enablement Ecosystem">
@@ -2440,7 +2450,7 @@
             <h2 id="next-title">Built with the teams who use it.</h2>
             <p>Rae keeps evolving around real sales work. The next chapter brings account intelligence and customer collaboration closer together.</p>
             <div class="button-row">
-              <a class="deck-button" href="https://rae.salesrechargekit.ai" target="_blank" rel="noopener noreferrer">Try Rae <span aria-hidden="true">↗</span></a>
+              <a class="deck-button" id="try-rae-link" href="https://rae.salesrechargekit.ai" target="_blank" rel="noopener noreferrer">Try Rae <span aria-hidden="true">↗</span></a>
               <button class="deck-button secondary" id="product-playground-button" type="button" aria-haspopup="dialog">
                 Suggest a feature <span aria-hidden="true">↗</span>
               </button>
@@ -2569,6 +2579,12 @@
   </noscript>
 
   <script>
+    function trackEvent(name, params) {
+      if (typeof gtag === "function") {
+        gtag("event", name, params);
+      }
+    }
+
     const stages = [
       {
         name: "Research",
@@ -2889,8 +2905,13 @@
       }
 
       const shouldFocus = Boolean(options.focus);
+      const isNewStage = index !== activeStageIndex;
       activeStageIndex = index;
       const stage = stages[index];
+
+      if (isNewStage) {
+        trackEvent("journey_stage_view", { stage_name: stage.name, stage_index: index + 1 });
+      }
 
       window.clearTimeout(stageUpdateTimer);
       stagePanel.classList.add("updating");
@@ -2946,6 +2967,7 @@
     function openGallery(trigger) {
       returnFocusElement = trigger;
       activeGalleryIndex = 0;
+      trackEvent("feature_gallery_open", { stage_name: stages[activeStageIndex].name });
       renderGallery();
       document.body.classList.add("dialog-open");
 
@@ -3044,6 +3066,7 @@
 
     function openSuggestionForm(trigger) {
       suggestionReturnFocus = trigger;
+      trackEvent("feature_suggestion_open", {});
       document.body.classList.add("dialog-open");
 
       if (typeof suggestionDialog.showModal === "function") {
@@ -3078,6 +3101,11 @@
     }
 
     productPlaygroundButton.addEventListener("click", () => openSuggestionForm(productPlaygroundButton));
+
+    const tryRaeLink = document.getElementById("try-rae-link");
+    tryRaeLink.addEventListener("click", () => {
+      trackEvent("cta_click", { cta_label: "Try Rae" });
+    });
     suggestionClose.addEventListener("click", closeSuggestionForm);
 
     suggestionDialog.addEventListener("close", () => {
@@ -3156,6 +3184,7 @@
       const mailtoUrl = `mailto:${emailTo}?cc=${encodeURIComponent(emailCc)}&subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
       suggestionMailtoLink.href = mailtoUrl;
+      trackEvent("feature_suggestion_submitted", {});
       suggestionMailtoLink.click();
     });
 
@@ -3201,6 +3230,10 @@
       deckDots.forEach((dot) => {
         dot.setAttribute("aria-current", String(dot.dataset.goScreen === target));
       });
+
+      if (previousIndex !== nextIndex) {
+        trackEvent("screen_view", { screen_name: target });
+      }
 
       if (options.history !== false && previousIndex !== nextIndex) {
         window.history.pushState({ screen: target }, "", `#${target}`);
