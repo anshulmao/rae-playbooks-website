@@ -1256,8 +1256,12 @@
       gap: clamp(48px, 8vw, 132px);
     }
 
+    .next-screen .screen-shell {
+      padding-top: calc(clamp(92px, 13vh, 122px) + clamp(0px, 1.6vh, 24px) + env(safe-area-inset-top));
+    }
+
     .next-copy {
-      align-self: center;
+      align-self: start;
     }
 
     .next-back {
@@ -1297,8 +1301,9 @@
 
     .roadmap {
       display: grid;
-      align-self: center;
-      border-top: 1px solid var(--line);
+      align-self: start;
+      margin-left: clamp(16px, 3vw, 40px);
+      gap: clamp(32px, 4.6vh, 48px);
     }
 
     .roadmap-item {
@@ -1306,8 +1311,6 @@
       align-items: start;
       grid-template-columns: minmax(120px, 0.48fr) minmax(0, 1fr);
       gap: 28px;
-      padding: clamp(24px, 3.4vh, 34px) 0;
-      border-bottom: 1px solid var(--line);
     }
 
     .roadmap-item h3 {
@@ -1325,6 +1328,23 @@
       color: rgba(248, 251, 255, 0.7);
       font-size: 13px;
       line-height: 1.6;
+    }
+
+    .roadmap-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .roadmap-thumb {
+      display: block;
+      width: 100%;
+      max-width: 340px;
+      border-radius: 12px;
+      border: 1px solid rgba(226, 240, 255, 0.18);
+      box-shadow:
+        0 24px 60px rgba(0, 5, 30, 0.5),
+        0 6px 18px rgba(0, 95, 190, 0.14);
     }
 
     .suggestion-dialog {
@@ -1579,6 +1599,10 @@
         gap: 42px;
       }
 
+      .roadmap {
+        margin-left: 0;
+      }
+
       .overview-copy h1,
       .next-copy h2 {
         max-width: 10ch;
@@ -1805,12 +1829,12 @@
 
       .roadmap {
         width: auto;
+        gap: clamp(22px, 3.2vh, 30px);
       }
 
       .roadmap-item {
         grid-template-columns: minmax(110px, 0.42fr) minmax(0, 1fr);
         gap: 18px;
-        padding: clamp(12px, 2vh, 18px) 0;
       }
 
       .roadmap-item h3 {
@@ -2063,6 +2087,10 @@
 
       .proof-item span {
         margin-top: 0;
+      }
+
+      .roadmap {
+        gap: 24px;
       }
 
       .roadmap-item {
@@ -2447,7 +2475,7 @@
             </button>
             <p class="screen-eyebrow">What’s next</p>
             <h2 id="next-title">Built with the teams who use it.</h2>
-            <p>Rae keeps evolving around real sales work. The next chapter brings account intelligence and customer collaboration closer together.</p>
+            <p>Rae keeps evolving around real sales work. The next chapter brings Rae directly into offer approvals, structured learning, and sales coaching.</p>
             <div class="button-row">
               <a class="deck-button" id="try-rae-link" href="https://rae.salesrechargekit.ai" target="_blank" rel="noopener noreferrer">Try Rae <span aria-hidden="true">↗</span></a>
               <button class="deck-button secondary" id="product-playground-button" type="button" aria-haspopup="dialog">
@@ -2458,16 +2486,24 @@
 
           <div class="roadmap" aria-label="Rae roadmap">
             <article class="roadmap-item">
-              <h3>Account Hub</h3>
-              <p>A single workspace for account signals, personas, proposals, content, and next actions.</p>
+              <h3>Faster Deal Approvals</h3>
+              <div class="roadmap-detail">
+                <p>Cuts Letter of Offer turnaround from days to hours, accelerating time-to-revenue by removing manual approval bottlenecks from the deal cycle.</p>
+              </div>
             </article>
             <article class="roadmap-item">
-              <h3>Sales Rooms</h3>
-              <p>Shared customer spaces that keep documents, conversations, owners, and next steps together.</p>
+              <h3>Workforce Readiness at Scale</h3>
+              <div class="roadmap-detail">
+                <p>Gives leadership real-time visibility into workforce readiness, certifying teams before major rollouts instead of hoping the training stuck.</p>
+                <img class="roadmap-thumb" src="assets/screens/36-quiz-learn-training-quiz.png" alt="Rae Quiz & Learn showing a training module quiz question with multiple-choice answers">
+              </div>
             </article>
             <article class="roadmap-item">
-              <h3>Product Playground</h3>
-              <p>Test early ideas, share what your team needs, and help shape the next Rae workflow.</p>
+              <h3>Data-Driven Sales Coaching</h3>
+              <div class="roadmap-detail">
+                <p>Replaces coaching guesswork with competency data, so managers can target training spend where it actually moves revenue.</p>
+                <img class="roadmap-thumb" src="assets/screens/35-sales-simulator-scoring-summary.png" alt="Rae sales simulator session complete screen showing an overall score and a performance breakdown by competency">
+              </div>
             </article>
           </div>
         </div>
