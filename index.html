@@ -253,6 +253,11 @@
       opacity: 0.28;
     }
 
+    .next-screen.deck-screen {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
     .overview-screen::after,
     .next-screen::after {
       position: absolute;
@@ -1252,12 +1257,15 @@
 
     .next-layout {
       align-items: center;
-      grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.2fr);
-      gap: clamp(48px, 8vw, 132px);
+      justify-content: center;
+      grid-template-columns: minmax(320px, 0.85fr) minmax(460px, 1.05fr);
+      gap: clamp(48px, 7vw, 110px);
+      width: min(100%, 1280px);
+      margin: 0 auto;
     }
 
     .next-screen .screen-shell {
-      padding-top: calc(clamp(92px, 13vh, 122px) + clamp(0px, 1.6vh, 24px) + env(safe-area-inset-top));
+      padding-top: calc(clamp(78px, 15vh, 170px) + env(safe-area-inset-top));
     }
 
     .next-copy {
@@ -1269,7 +1277,7 @@
       display: inline-flex;
       align-items: center;
       gap: 9px;
-      margin: 0 0 24px;
+      margin: 0 0 44px;
       padding: 4px 0;
       border: 0;
       background: transparent;
@@ -1302,49 +1310,113 @@
     .roadmap {
       display: grid;
       align-self: start;
-      margin-left: clamp(16px, 3vw, 40px);
-      gap: clamp(32px, 4.6vh, 48px);
+      margin-top: 101px;
+      gap: clamp(28px, 3.6vh, 40px);
+    }
+
+    .roadmap-track {
+      position: relative;
     }
 
     .roadmap-item {
-      display: grid;
+      display: none;
       align-items: start;
-      grid-template-columns: minmax(120px, 0.48fr) minmax(0, 1fr);
-      gap: 28px;
+      grid-template-columns: minmax(140px, 0.5fr) minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .roadmap-item.is-active {
+      display: grid;
     }
 
     .roadmap-item h3 {
       margin: 0;
       color: #ffffff;
-      font-size: clamp(20px, 2vw, 28px);
+      font-size: clamp(24px, 2.4vw, 34px);
       font-weight: 600;
       letter-spacing: -0.035em;
-      line-height: 1.05;
+      line-height: 1.08;
     }
 
     .roadmap-item p {
-      max-width: 52ch;
+      max-width: 54ch;
       margin: 0;
       color: rgba(248, 251, 255, 0.7);
-      font-size: 13px;
+      font-size: clamp(14px, 1.15vw, 16px);
       line-height: 1.6;
     }
 
     .roadmap-detail {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
 
     .roadmap-thumb {
       display: block;
       width: 100%;
-      max-width: 340px;
-      border-radius: 12px;
+      max-width: 440px;
+      border-radius: 14px;
       border: 1px solid rgba(226, 240, 255, 0.18);
       box-shadow:
-        0 24px 60px rgba(0, 5, 30, 0.5),
-        0 6px 18px rgba(0, 95, 190, 0.14);
+        0 28px 70px rgba(0, 5, 30, 0.5),
+        0 8px 22px rgba(0, 95, 190, 0.16);
+    }
+
+    .roadmap-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .roadmap-arrow {
+      appearance: none;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 224, 0, 0.5);
+      border-radius: 50%;
+      background: rgba(0, 12, 48, 0.6);
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .roadmap-arrow span {
+      display: block;
+      line-height: 1;
+    }
+
+    .roadmap-arrow:hover {
+      background: var(--yellow);
+      color: #050505;
+      transform: scale(1.06);
+    }
+
+    .roadmap-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .roadmap-dot {
+      appearance: none;
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.34);
+      cursor: pointer;
+      transition: width 220ms var(--ease), border-radius 220ms var(--ease), background-color 220ms ease;
+    }
+
+    .roadmap-dot[aria-current="true"] {
+      width: 30px;
+      border-radius: 999px;
+      background: var(--yellow);
     }
 
     .suggestion-dialog {
@@ -1599,10 +1671,6 @@
         gap: 42px;
       }
 
-      .roadmap {
-        margin-left: 0;
-      }
-
       .overview-copy h1,
       .next-copy h2 {
         max-width: 10ch;
@@ -1729,6 +1797,33 @@
       }
     }
 
+    /* Keep the What's Next split two-column further down than the shared
+       1080px breakpoint, so zooming in doesn't force it to stack early. */
+    @media (min-width: 821px) and (max-width: 1080px) {
+      .next-layout {
+        grid-template-columns: minmax(260px, 0.85fr) minmax(380px, 1.05fr);
+        gap: clamp(32px, 5vw, 70px);
+      }
+
+      .next-copy h2 {
+        max-width: 12ch;
+        font-size: clamp(32px, 4vw, 52px);
+      }
+
+      .roadmap-item {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+
+      .roadmap-item h3 {
+        font-size: clamp(22px, 2.8vw, 30px);
+      }
+
+      .roadmap-thumb {
+        max-width: 380px;
+      }
+    }
+
     @media (hover: hover) and (pointer: fine) and (max-height: 700px) {
       body {
         overflow: hidden;
@@ -1757,14 +1852,6 @@
       .screen-shell {
         padding-top: calc(clamp(78px, 8vh, 94px) + env(safe-area-inset-top));
         padding-bottom: clamp(16px, 2vh, 22px);
-      }
-
-      .roadmap {
-        gap: clamp(14px, 2.4vh, 22px);
-      }
-
-      .roadmap-thumb {
-        display: none;
       }
 
       .overview-layout {
@@ -1816,8 +1903,7 @@
       }
 
       .next-layout {
-        grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-        gap: clamp(30px, 4vw, 58px);
+        gap: clamp(24px, 3.6vh, 36px);
       }
 
       .next-back {
@@ -1836,22 +1922,25 @@
       }
 
       .roadmap {
-        width: auto;
-        gap: clamp(22px, 3.2vh, 30px);
+        width: min(100%, 640px);
+        gap: clamp(18px, 2.6vh, 26px);
       }
 
       .roadmap-item {
-        grid-template-columns: minmax(110px, 0.42fr) minmax(0, 1fr);
-        gap: 18px;
+        gap: 16px;
       }
 
       .roadmap-item h3 {
-        font-size: clamp(18px, 1.8vw, 24px);
+        font-size: clamp(22px, 2.6vw, 32px);
       }
 
       .roadmap-item p {
-        font-size: 11px;
-        line-height: 1.42;
+        font-size: 13px;
+        line-height: 1.48;
+      }
+
+      .roadmap-thumb {
+        max-width: 400px;
       }
 
       .topbar,
@@ -2103,7 +2192,7 @@
 
       .roadmap-item {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 16px;
       }
 
       .suggestion-dialog {
@@ -2493,27 +2582,42 @@
           </div>
 
           <div class="roadmap" aria-label="Rae roadmap">
-            <article class="roadmap-item">
-              <h3>Faster Deal Approvals</h3>
-              <div class="roadmap-detail">
-                <p>Cuts Letter of Offer turnaround from days to hours, accelerating time-to-revenue by removing manual approval bottlenecks from the deal cycle.</p>
-                <img class="roadmap-thumb" src="assets/screens/37-loo-approval-review.png" alt="Rae reviewing a Letter of Offer, flagging pricing and terms discrepancies as blockers before it can be submitted for approval">
+            <div class="roadmap-track" id="roadmap-track">
+              <article class="roadmap-item is-active" data-roadmap-index="0">
+                <h3>Faster Deal Approvals</h3>
+                <div class="roadmap-detail">
+                  <p>Cuts Letter of Offer turnaround from days to hours, accelerating time-to-revenue by removing manual approval bottlenecks from the deal cycle.</p>
+                  <img class="roadmap-thumb" src="assets/screens/37-loo-approval-review.png" alt="Rae reviewing a Letter of Offer, flagging pricing and terms discrepancies as blockers before it can be submitted for approval">
+                </div>
+              </article>
+              <article class="roadmap-item" data-roadmap-index="1">
+                <h3>Workforce Readiness at Scale</h3>
+                <div class="roadmap-detail">
+                  <p>Gives leadership real-time visibility into workforce readiness, certifying teams before major rollouts instead of hoping the training stuck.</p>
+                  <img class="roadmap-thumb" src="assets/screens/36-quiz-learn-training-quiz.png" alt="Rae Quiz & Learn showing a training module quiz question with multiple-choice answers">
+                </div>
+              </article>
+              <article class="roadmap-item" data-roadmap-index="2">
+                <h3>Data-Driven Sales Coaching</h3>
+                <div class="roadmap-detail">
+                  <p>Replaces coaching guesswork with competency data, so managers can target training spend where it actually moves revenue.</p>
+                  <img class="roadmap-thumb" src="assets/screens/35-sales-simulator-scoring-summary.png" alt="Rae sales simulator session complete screen showing an overall score and a performance breakdown by competency">
+                </div>
+              </article>
+            </div>
+            <div class="roadmap-nav">
+              <button class="roadmap-arrow roadmap-prev" id="roadmap-prev" type="button" aria-label="Previous initiative">
+                <span aria-hidden="true">←</span>
+              </button>
+              <div class="roadmap-dots" id="roadmap-dots">
+                <button class="roadmap-dot" type="button" aria-current="true" aria-label="Show Faster Deal Approvals"></button>
+                <button class="roadmap-dot" type="button" aria-current="false" aria-label="Show Workforce Readiness at Scale"></button>
+                <button class="roadmap-dot" type="button" aria-current="false" aria-label="Show Data-Driven Sales Coaching"></button>
               </div>
-            </article>
-            <article class="roadmap-item">
-              <h3>Workforce Readiness at Scale</h3>
-              <div class="roadmap-detail">
-                <p>Gives leadership real-time visibility into workforce readiness, certifying teams before major rollouts instead of hoping the training stuck.</p>
-                <img class="roadmap-thumb" src="assets/screens/36-quiz-learn-training-quiz.png" alt="Rae Quiz & Learn showing a training module quiz question with multiple-choice answers">
-              </div>
-            </article>
-            <article class="roadmap-item">
-              <h3>Data-Driven Sales Coaching</h3>
-              <div class="roadmap-detail">
-                <p>Replaces coaching guesswork with competency data, so managers can target training spend where it actually moves revenue.</p>
-                <img class="roadmap-thumb" src="assets/screens/35-sales-simulator-scoring-summary.png" alt="Rae sales simulator session complete screen showing an overall score and a performance breakdown by competency">
-              </div>
-            </article>
+              <button class="roadmap-arrow roadmap-next" id="roadmap-next" type="button" aria-label="Next initiative">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -3149,6 +3253,32 @@
     const tryRaeLink = document.getElementById("try-rae-link");
     tryRaeLink.addEventListener("click", () => {
       trackEvent("cta_click", { cta_label: "Try Rae" });
+    });
+
+    const roadmapItems = Array.from(document.querySelectorAll(".roadmap-item"));
+    const roadmapDots = Array.from(document.querySelectorAll(".roadmap-dot"));
+    const roadmapPrev = document.getElementById("roadmap-prev");
+    const roadmapNext = document.getElementById("roadmap-next");
+    let activeRoadmapIndex = 0;
+
+    function setRoadmapItem(index) {
+      activeRoadmapIndex = (index + roadmapItems.length) % roadmapItems.length;
+
+      roadmapItems.forEach((item, i) => {
+        item.classList.toggle("is-active", i === activeRoadmapIndex);
+      });
+
+      roadmapDots.forEach((dot, i) => {
+        dot.setAttribute("aria-current", String(i === activeRoadmapIndex));
+      });
+
+      trackEvent("roadmap_item_view", { item_name: roadmapItems[activeRoadmapIndex].querySelector("h3").textContent });
+    }
+
+    roadmapPrev.addEventListener("click", () => setRoadmapItem(activeRoadmapIndex - 1));
+    roadmapNext.addEventListener("click", () => setRoadmapItem(activeRoadmapIndex + 1));
+    roadmapDots.forEach((dot, i) => {
+      dot.addEventListener("click", () => setRoadmapItem(i));
     });
     suggestionClose.addEventListener("click", closeSuggestionForm);
 
