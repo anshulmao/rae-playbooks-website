@@ -129,6 +129,27 @@
       gap: 14px;
     }
 
+    .quest-link {
+      display: inline-flex;
+      min-height: 32px;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 224, 0, 0.55);
+      border-radius: 7px;
+      color: #ffe000;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background-color 180ms ease;
+    }
+
+    .quest-link:hover {
+      background: rgba(255, 224, 0, 0.12);
+    }
+
     .home-button {
       appearance: none;
       display: inline-flex;
@@ -2451,6 +2472,7 @@
         <img class="brand-cdb" src="assets/6a5d9af170221493ca2e232e_CDB_White_Logo.png" alt="CelcomDigi Business">
       </a>
       <div class="deck-status" aria-label="Story navigation">
+        <a class="quest-link" href="quest.html">★ Rae Quest</a>
         <button class="home-button" type="button" data-go-screen="overview" aria-label="Return to the Rae overview">← Home</button>
         <span class="deck-name" id="deck-name">Overview</span>
         <div class="deck-dots">
