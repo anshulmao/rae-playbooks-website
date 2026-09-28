@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LBB1BJSGF4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-LBB1BJSGF4");
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Rae Quest: explore Rae City, answer six questions and crack the Rae Code.">
+  <meta name="theme-color" content="#00144f">
+  <meta property="og:title" content="Rae Quest - Can you crack the Rae Code?">
+  <meta property="og:description" content="Six stops, six questions, one customer deal. Discover what Rae can do.">
+  <title>Rae Quest - Can you crack the Rae Code?</title>
+  <link rel="icon" href="assets/rae-logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root {
+      --navy-950: #000c32;
+      --navy-900: #00144f;
+      --navy-800: #001871;
+      --bright: #0064dc;
+      --blue: #2aa8e8;
+      --blue-soft: #b9e8f8;
+      --yellow: #ffe000;
+      --white: #f8fbff;
+      --muted: rgba(238, 246, 255, 0.7);
+      --line: rgba(208, 230, 255, 0.18);
+      --glass: rgba(2, 17, 60, 0.72);
+      --glass-strong: rgba(2, 15, 51, 0.94);
+      --wrong: #ff9b9b;
+      --ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+      --shadow: 0 32px 90px rgba(0, 8, 40, 0.55);
+      --topbar: calc(64px + env(safe-area-inset-top));
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background:
+        radial-gradient(900px 600px at 85% -10%, rgba(0, 100, 220, 0.35), transparent 60%),
+        radial-gradient(700px 500px at -10% 110%, rgba(42, 168, 232, 0.18), transparent 60%),
+        var(--navy-900);
+      color: var(--white);
+      font-family: Manrope, Montserrat, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body.can-scroll { overflow: auto; }
+
+    button, a { font: inherit; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: fixed;
+      z-index: 30;
+      inset: 0 0 auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: var(--topbar);
+      padding: calc(10px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+      border-bottom: 1px solid rgba(207, 229, 255, 0.14);
+      background: #001247;
+      box-shadow: 0 12px 36px rgba(0, 6, 32, 0.24);
+    }
+
+    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-rae {
+      width: 52px; height: auto; box-sizing: content-box;
+      padding: 5px 7px; border: 1px solid rgba(255, 255, 255, 0.74); border-radius: 8px; background: #f5f8fd;
+    }
+    .brand-divider { width: 1px; height: 24px; background: var(--line); }
+    .brand-cdb { width: 104px; height: auto; }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    .quest-chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 11px; border: 1px solid rgba(255, 224, 0, 0.45); border-radius: 999px;
+      color: var(--yellow); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .quest-chip svg { width: 14px; height: 14px; }
+
+    .score-pill {
+      display: none; align-items: baseline; gap: 4px;
+      padding: 7px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.08);
+      font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums;
+    }
+    .score-pill small { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    body[data-view="map"] .score-pill { display: inline-flex; }
+    body[data-view="map"] .quest-chip { display: none; }
+
+    /* ---------- Views ---------- */
+    .view {
+      position: fixed; inset: var(--topbar) 0 0 0;
+      display: none;
+    }
+    .view.is-active { display: flex; }
+
+    .eyebrow {
+      margin: 0 0 12px; color: var(--blue-soft);
+      font-size: 11px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    }
+
+    .btn {
+      appearance: none; display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 10px;
+      padding: 0 22px; border: 1px solid transparent; border-radius: 12px;
+      background: var(--yellow); color: #080808; cursor: pointer;
+      font-size: 15px; font-weight: 800; line-height: 1; text-decoration: none;
+      transition: transform 180ms var(--ease), background-color 180ms ease, box-shadow 180ms ease;
+      box-shadow: 0 10px 30px rgba(255, 224, 0, 0.18);
+    }
+    @media (hover: hover) { .btn:hover { transform: translateY(-2px); } }
+    .btn:active { transform: translateY(1px) scale(0.985); }
+    .btn:focus-visible, .option:focus-visible, .lm:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .btn.secondary {
+      border-color: rgba(230, 242, 255, 0.26); background: rgba(2, 16, 55, 0.6); color: #fff; box-shadow: none;
+    }
+    .btn.block { width: 100%; }
+
+    /* ---------- Intro ---------- */
+    .intro {
+      align-items: center; justify-content: center;
+      padding: 24px max(18px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      overflow: auto;
+    }
+    .intro-inner { width: min(560px, 100%); margin: auto; }
+    .intro h1 {
+      margin: 0; font-size: clamp(38px, 10vw, 64px); font-weight: 800; line-height: 0.98; letter-spacing: -0.045em;
+    }
+    .intro h1 em { font-style: normal; color: var(--yellow); }
+    .intro .lead { margin: 18px 0 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
+
+    .how {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 24px 0 0; padding: 0; list-style: none;
+    }
+    .how li {
+      padding: 12px 10px; border: 1px solid var(--line); border-radius: 12px; background: rgba(2, 16, 55, 0.45);
+      font-size: 12px; font-weight: 700; line-height: 1.35;
+    }
+    .how b { display: block; margin-bottom: 4px; color: var(--yellow); font-size: 20px; font-weight: 800; }
+
+    .code-row { display: flex; gap: 8px; margin: 26px 0 0; }
+    .slot {
+      position: relative; display: grid; place-items: center;
+      width: 44px; height: 50px; border: 1px solid rgba(185, 232, 248, 0.28); border-radius: 10px;
+      background: rgba(0, 12, 50, 0.6); color: rgba(185, 232, 248, 0.5); font-size: 18px; font-weight: 800;
+      transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, transform 300ms var(--ease);
+    }
+    .slot svg { width: 22px; height: 22px; }
+    .slot.is-correct { border-color: var(--yellow); background: var(--yellow); color: var(--navy-900); }
+    .slot.is-visited { border-color: var(--blue); background: rgba(42, 168, 232, 0.25); color: var(--blue-soft); }
+    .slot.is-current { border-color: var(--yellow); color: var(--yellow); box-shadow: 0 0 0 3px rgba(255, 224, 0, 0.16); }
+    .slot.pop { animation: pop 520ms var(--ease); }
+    .intro .code-row .slot { animation: slotIdle 2.6s ease-in-out infinite; }
+    .intro .code-row .slot:nth-child(2) { animation-delay: .15s; }
+    .intro .code-row .slot:nth-child(3) { animation-delay: .3s; }
+    .intro .code-row .slot:nth-child(4) { animation-delay: .45s; }
+    .intro .code-row .slot:nth-child(5) { animation-delay: .6s; }
+    .intro .code-row .slot:nth-child(6) { animation-delay: .75s; }
+
+    @keyframes slotIdle { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(-4px); border-color: rgba(255, 224, 0, .6); } }
+    @keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+    .intro-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+    .intro-note { color: var(--muted); font-size: 13px; }
+
+    /* ---------- Map view ---------- */
+    .mapview {
+      display: none;
+      flex-direction: column;
+      padding: 10px max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      gap: 10px;
+    }
+    .mapview.is-active { display: flex; }
+    .hud { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .hud .code-row { margin: 0; gap: 6px; }
+    .hud .slot { width: 38px; height: 42px; border-radius: 9px; }
+    .hud .slot svg { width: 19px; height: 19px; }
+    .hud-label { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+
+    .map-wrap {
+      position: relative; flex: 1 1 auto; min-height: 0;
+      border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(0, 100, 220, 0.28), transparent 65%),
+        linear-gradient(180deg, #00103f, #000b30);
+    }
+    .map-wrap::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .55;
+      background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 12%, #b9e8f8, transparent),
+        radial-gradient(1px 1px at 85% 60%, #fff, transparent), radial-gradient(1px 1px at 10% 80%, #b9e8f8, transparent),
+        radial-gradient(1px 1px at 45% 90%, #fff, transparent), radial-gradient(1px 1px at 60% 50%, #fff, transparent);
+    }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: manipulation; user-select: none; }
+
+    .toast {
+      position: absolute; left: 50%; top: 12px; z-index: 5; transform: translate(-50%, -20px);
+      padding: 9px 14px; border-radius: 999px; background: var(--glass-strong); border: 1px solid var(--line);
+      font-size: 13px; font-weight: 700; opacity: 0; pointer-events: none; white-space: nowrap;
+      transition: opacity 200ms ease, transform 200ms var(--ease);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .story {
+      flex: 0 0 auto;
+      padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--glass);
+      backdrop-filter: blur(14px);
+    }
+    .story .eyebrow { margin-bottom: 6px; color: var(--yellow); }
+    .story p { margin: 0 0 12px; font-size: 14px; line-height: 1.5; color: #e9f3ff; }
+    .story .hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+    /* SVG map styles */
+    .lm { cursor: pointer; outline: none; }
+    .lm .lm-body { transition: opacity 300ms ease, filter 300ms ease; }
+    .lm.locked .lm-body { opacity: 0.5; filter: saturate(0.4); }
+    .lm .ring { opacity: 0; transform-box: fill-box; transform-origin: center; }
+    .lm.next .ring { opacity: 1; animation: ring 1.6s ease-out infinite; }
+    .lm .badge { opacity: 0; transform-box: fill-box; transform-origin: center; transition: opacity 300ms ease; }
+    .lm.done .badge { opacity: 1; animation: pop 520ms var(--ease); }
+    .lm .lock { opacity: 0; }
+    .lm.locked .lock { opacity: 1; }
+    .lm-label rect { fill: rgba(0, 12, 50, 0.86); stroke: rgba(185, 232, 248, 0.28); }
+    .lm.next .lm-label rect { fill: var(--yellow); stroke: var(--yellow); }
+    .lm.next .lm-label .name { fill: #080808; }
+    .lm.next .lm-label .stage { fill: #001871; }
+    .lm-label .name { fill: #fff; font: 800 11px Manrope, Arial, sans-serif; }
+    .lm-label .stage { fill: var(--blue-soft); font: 800 7.5px Manrope, Arial, sans-serif; letter-spacing: 0.14em; }
+
+    @keyframes ring { 0% { transform: scale(0.7); opacity: 0.95; } 100% { transform: scale(1.5); opacity: 0; } }
+
+    .bob { animation: bob 1.6s ease-in-out infinite; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    .float { animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-6px) rotate(-3deg); } }
+    .twinkle { animation: twinkle 3s ease-in-out infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .beacon { transform-box: fill-box; transform-origin: center; animation: beacon 1.4s ease-in-out infinite; }
+    @keyframes beacon { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(1.4); } }
+    .beam { transform-box: view-box; animation: beam 4s linear infinite; }
+    @keyframes beam { 0%, 100% { opacity: .15; } 50% { opacity: .55; } }
+    .wave { animation: wave 3.5s ease-in-out infinite; }
+    @keyframes wave { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+    .road-done { transition: stroke-dashoffset 60ms linear; }
+
+    /* ---------- Sheet ---------- */
+    .sheet {
+      position: fixed; inset: 0; z-index: 40; display: none;
+      align-items: flex-end; justify-content: center;
+      background: rgba(0, 6, 30, 0.6); backdrop-filter: blur(4px);
+    }
+    .sheet.open { display: flex; animation: fade 200ms ease; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .sheet-panel {
+      position: relative; width: min(600px, 100%); max-height: 94dvh; overflow: auto;
+      padding: 22px 18px max(20px, env(safe-area-inset-bottom));
+      border: 1px solid var(--line); border-bottom: 0; border-radius: 22px 22px 0 0;
+      background: linear-gradient(180deg, #03195c, #010f3f 60%);
+      box-shadow: var(--shadow);
+      animation: rise 320ms var(--ease);
+    }
+    @keyframes rise { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .sheet-grip { width: 40px; height: 4px; margin: -8px auto 14px; border-radius: 4px; background: rgba(255, 255, 255, 0.2); }
+
+    .stop-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .stop-icon {
+      flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
+      background: var(--yellow); color: var(--navy-900);
+    }
+    .stop-icon svg { width: 24px; height: 24px; }
+    .stop-head .eyebrow { margin: 0 0 3px; }
+    .stop-head h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+
+    .feature-chip {
+      display: inline-flex; margin: 0 0 12px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(42, 168, 232, 0.18); color: var(--blue-soft); font-size: 12px; font-weight: 800;
+    }
+
+    .media {
+      overflow: hidden; border: 1px solid rgba(185, 232, 248, 0.25); border-radius: 12px; background: #fff;
+    }
+    .media-bar {
+      display: flex; align-items: center; gap: 6px; padding: 7px 10px; background: #eef3fb; color: #52607a; font-size: 10px; font-weight: 700;
+    }
+    .media-bar i { width: 7px; height: 7px; border-radius: 50%; background: #c8d3e6; }
+    .media-bar span { margin-left: 6px; }
+    .media img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top center; background: #f3f7fd; }
+
+    .caption { margin: 14px 0 18px; color: #e3eefc; font-size: 15px; line-height: 1.55; }
+    .caption strong { color: var(--yellow); }
+
+    .scenario {
+      margin: 0 0 8px; padding: 10px 12px; border-left: 3px solid var(--yellow); border-radius: 0 10px 10px 0;
+      background: rgba(255, 224, 0, 0.07); color: var(--muted); font-size: 13px; line-height: 1.45;
+    }
+    .question { margin: 10px 0 16px; font-size: 19px; font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; }
+
+    .timer { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .timer-track { flex: 1; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+    .timer-fill { height: 100%; width: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--yellow), #ffd000); transform-origin: left; }
+    .timer-label { min-width: 104px; text-align: right; color: var(--yellow); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+    .options { display: grid; gap: 10px; }
+    .option {
+      appearance: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 58px;
+      padding: 12px 14px; border: 1px solid rgba(185, 232, 248, 0.25); border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04); color: #fff; cursor: pointer; text-align: left;
+      font-size: 15px; font-weight: 700; line-height: 1.35;
+      transition: transform 160ms var(--ease), background-color 160ms ease, border-color 160ms ease;
+    }
+    @media (hover: hover) { .option:hover:not(:disabled) { border-color: var(--yellow); background: rgba(255, 224, 0, 0.08); } }
+    .option:active:not(:disabled) { transform: scale(0.985); }
+    .option .key {
+      flex: 0 0 auto; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px;
+      background: rgba(185, 232, 248, 0.14); color: var(--blue-soft); font-size: 13px; font-weight: 800;
+    }
+    .option:disabled { cursor: default; }
+    .option.is-right { border-color: var(--yellow); background: rgba(255, 224, 0, 0.14); }
+    .option.is-right .key { background: var(--yellow); color: var(--navy-900); }
+    .option.is-wrong { border-color: var(--wrong); background: rgba(255, 155, 155, 0.1); }
+    .option.is-wrong .key { background: var(--wrong); color: var(--navy-900); }
+    .option.is-dim { opacity: 0.45; }
+
+    .result { display: none; margin-top: 16px; padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); }
+    .result.show { display: block; animation: rise 320ms var(--ease); }
+    .result-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .result-title { margin: 0; font-size: 20px; font-weight: 800; }
+    .result.good .result-title { color: var(--yellow); }
+    .result.bad .result-title { color: var(--wrong); }
+    .points { padding: 6px 10px; border-radius: 999px; background: var(--yellow); color: #080808; font-size: 13px; font-weight: 800; }
+    .result.bad .points { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .result p { margin: 0 0 10px; color: #e3eefc; font-size: 14px; line-height: 1.55; }
+    .result .why { display: flex; gap: 8px; align-items: flex-start; color: var(--blue-soft); font-weight: 700; }
+    .result .why svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; color: var(--yellow); }
+    .result .btn { margin-top: 8px; }
+
+    /* ---------- Final ---------- */
+    .final { overflow: auto; justify-content: center; padding: 22px max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .final-inner { width: min(620px, 100%); margin: 0 auto; }
+    .final h1 { margin: 0; font-size: clamp(34px, 9vw, 54px); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
+    .final h1 em { font-style: normal; color: var(--yellow); }
+    .final .code-row { margin: 18px 0 22px; }
+
+    .scorecard {
+      display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: center;
+      padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--glass);
+    }
+    .big-score { grid-row: span 2; font-size: 58px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--yellow); }
+    .big-score small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+    .rank { margin: 0; font-size: 20px; font-weight: 800; }
+    .rank-copy { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+    .card {
+      margin-top: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(2, 16, 55, 0.55);
+    }
+    .card h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 18px; font-weight: 800; }
+    .card h2 .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--yellow); color: #080808; font-size: 13px; }
+    .card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .tries { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .tries li {
+      padding: 11px 12px; border: 1px dashed rgba(185, 232, 248, 0.3); border-radius: 12px;
+      font-size: 14px; font-weight: 700; line-height: 1.35;
+    }
+    .tries li span { display: block; margin-bottom: 3px; color: var(--blue-soft); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+
+    .claim {
+      position: relative; overflow: hidden; margin-top: 14px; padding: 20px 18px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--yellow), #fff3a0 45%, var(--yellow));
+      background-size: 220% 220%; animation: shimmer 4s ease-in-out infinite;
+      color: #080808;
+    }
+    @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .claim h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .claim p { margin: 0 0 14px; font-size: 14px; font-weight: 600; line-height: 1.45; }
+    .claim-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .claim-meta > span {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 11px; border-radius: 10px;
+      background: rgba(0, 20, 79, 0.9); color: #fff; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+    }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #5cff9a; animation: twinkle 1.2s ease-in-out infinite; }
+    .staff-btn {
+      appearance: none; margin-top: 14px; padding: 8px 12px; border: 1px dashed rgba(0, 20, 79, 0.45); border-radius: 10px;
+      background: transparent; color: #001871; cursor: pointer; font-size: 12px; font-weight: 800;
+    }
+    .stamp {
+      position: absolute; right: 14px; top: 16px; display: none; padding: 6px 12px; border: 3px solid #001871; border-radius: 10px;
+      color: #001871; font-size: 18px; font-weight: 800; letter-spacing: 0.1em; transform: rotate(-10deg);
+    }
+    .claim.claimed .stamp { display: block; animation: pop 400ms var(--ease); }
+    .claim.claimed .staff-btn { display: none; }
+
+    .unlocked { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .unlocked li { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 999px; background: rgba(42, 168, 232, 0.16); font-size: 13px; font-weight: 700; }
+    .unlocked li svg { width: 15px; height: 15px; color: var(--yellow); }
+    .final-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+
+    .confetti { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+    .confetti i { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation: fall linear forwards; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
+    /* ---------- Desktop ---------- */
+    @media (min-width: 900px) {
+      :root { --topbar: 72px; }
+      .brand-rae { width: 62px; }
+      .brand-cdb { width: 124px; }
+      .mapview { display: none; flex-direction: row; padding: 18px 28px 24px; gap: 22px; }
+      .mapview.is-active { display: flex; }
+      .map-col { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; }
+      .map-wrap { width: 100%; max-width: 760px; }
+      .side { flex: 0 0 360px; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+      .hud { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--glass); }
+      .hud .slot { width: 44px; height: 50px; }
+      .story { padding: 20px; }
+      .story p { font-size: 16px; }
+      .sheet { align-items: center; }
+      .sheet-panel { border-bottom: 1px solid var(--line); border-radius: 22px; padding: 26px 26px 24px; max-height: 90dvh; }
+      .sheet-grip { display: none; }
+    }
+    @media (max-width: 899px) {
+      .map-col, .side { display: contents; }
+      .hud { order: 0; }
+      .map-wrap { order: 1; }
+      .story { order: 2; }
+    }
+    @media (max-width: 380px) {
+      .brand-cdb { width: 84px; }
+      .brand-rae { width: 44px; }
+      .brand { gap: 8px; }
+      .hud .slot { width: 33px; height: 38px; }
+      .hud-label { display: none; }
+      .how li { font-size: 11px; }
+      .question { font-size: 17px; }
+    }
+    @media (max-height: 700px) and (max-width: 899px) {
+      .story p { font-size: 13px; margin-bottom: 8px; }
+      .story .hint { display: none; }
+      .btn { min-height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body data-view="intro">
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Back to the Rae playbook">
+      <img class="brand-rae" src="assets/rae-logo.svg" alt="Rae">
+      <span class="brand-divider" aria-hidden="true"></span>
+      <img class="brand-cdb" src="assets/6a5d9af170221493ca2e232e_CDB_White_Logo.png" alt="CelcomDigi Business">
+    </a>
+    <div class="topbar-right">
+      <span class="quest-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>Rae Quest</span>
+      <span class="score-pill" aria-live="polite"><span id="score-top">0</span><small>pts</small></span>
+    </div>
+  </header>
+
+  <!-- Intro -->
+  <section class="view intro is-active" id="view-intro" aria-labelledby="intro-title">
+    <div class="intro-inner">
+      <p class="eyebrow">CelcomDigi AI Day · Rae Quest</p>
+      <h1 id="intro-title">Can you crack the <em>Rae Code?</em></h1>
+      <p class="lead">Explore Rae City and help a customer, one stop at a time. At each stop, see what Rae can do, then answer one quick question. Crack all six to claim your gift at the booth.</p>
+      <ul class="how">
+        <li><b>6</b>stops to explore</li>
+        <li><b>6</b>quick questions</li>
+        <li><b>1</b>gift at the booth</li>
+      </ul>
+      <div class="code-row" id="intro-code" aria-hidden="true"></div>
+      <div class="intro-cta">
+        <button class="btn" id="start-btn" type="button">Start the quest <span aria-hidden="true">→</span></button>
+        <span class="intro-note">About 3 minutes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section class="view mapview" id="view-map" aria-label="Rae City map">
+    <div class="side">
+      <div class="hud">
+        <span class="hud-label">Rae Code</span>
+        <div class="code-row" id="hud-code"></div>
+      </div>
+      <div class="story" aria-live="polite">
+        <p class="eyebrow" id="story-kicker">Stop 1 of 6</p>
+        <p id="story-text"></p>
+        <button class="btn block" id="travel-btn" type="button"></button>
+        <p class="hint">Or tap the glowing stop on the map</p>
+      </div>
+    </div>
+    <div class="map-col">
+      <div class="map-wrap">
+        <svg id="map" viewBox="0 -36 400 756" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Map of Rae City with six stops"></svg>
+        <div class="toast" id="toast" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final -->
+  <section class="view final" id="view-final" aria-labelledby="final-title">
+    <div class="final-inner">
+      <p class="eyebrow">Quest complete</p>
+      <h1 id="final-title">Rae Code <em>cracked!</em></h1>
+      <div class="code-row" id="final-code" aria-hidden="true"></div>
+
+      <div class="scorecard">
+        <div class="big-score"><span id="final-score">0</span><small>of 900 pts</small></div>
+        <p class="rank" id="final-rank"></p>
+        <p class="rank-copy" id="final-rank-copy"></p>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">1</span>Try Rae live</h2>
+        <p>Head to the Rae demo screen at the booth and try one of these for real:</p>
+        <ul class="tries">
+          <li><span>Ask Rae</span>“Tell me about Maybank”</li>
+          <li><span>Proposal Generator</span>Build a proposal for a coffee chain in 10 minutes</li>
+          <li><span>Sales Simulator</span>Practise with a cost-sensitive CFO</li>
+        </ul>
+      </div>
+
+      <div class="claim" id="claim">
+        <div class="stamp">Claimed</div>
+        <h2>Claim your gift</h2>
+        <p>Show this screen to the Rae team at the booth.</p>
+        <div class="claim-meta">
+          <span id="claim-code">RQ-0000</span>
+          <span><i class="live-dot" aria-hidden="true"></i><span id="claim-clock">00:00:00</span></span>
+          <span id="claim-correct">0/6 correct</span>
+        </div>
+        <button class="staff-btn" id="staff-btn" type="button">Rae team only: mark as claimed</button>
+      </div>
+
+      <div class="card">
+        <h2>What you unlocked</h2>
+        <ul class="unlocked" id="unlocked"></ul>
+      </div>
+
+      <div class="final-actions">
+        <button class="btn secondary" id="replay-btn" type="button">Play again</button>
+        <a class="btn" id="playbook-link" href="index.html">Explore Rae <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stop sheet -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-panel" id="sheet-panel">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div class="stop-head">
+        <div class="stop-icon" id="sheet-icon" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow" id="sheet-kicker"></p>
+          <h2 id="sheet-title"></h2>
+        </div>
+      </div>
+
+      <div id="phase-explore">
+        <span class="feature-chip" id="sheet-feature"></span>
+        <div class="media">
+          <div class="media-bar" aria-hidden="true"><i></i><i></i><i></i><span>rae.salesrechargekit.ai</span></div>
+          <img id="sheet-media" alt="">
+        </div>
+        <p class="caption" id="sheet-caption"></p>
+        <button class="btn block" id="challenge-btn" type="button">I’m ready. Ask me! <span aria-hidden="true">→</span></button>
+      </div>
+
+      <div id="phase-question" hidden>
+        <p class="scenario" id="sheet-scenario"></p>
+        <div class="timer" aria-hidden="true">
+          <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+          <span class="timer-label" id="timer-label">Speed bonus +50</span>
+        </div>
+        <p class="question" id="sheet-question"></p>
+        <div class="options" id="options"></div>
+        <div class="result" id="result" aria-live="polite">
+          <div class="result-head">
+            <p class="result-title" id="result-title"></p>
+            <span class="points" id="result-points"></span>
+          </div>
+          <p id="result-explain"></p>
+          <p class="why"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span id="result-why"></span></p>
+          <button class="btn block" id="continue-btn" type="button"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ---------------- Analytics ---------------- */
+      function track(name, params) {
+        try { if (typeof gtag === "function") gtag("event", name, params || {}); } catch (e) {}
+      }
+
+      /* ---------------- Icons ---------------- */
+      var ICONS = {
+        research: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
+        qualify: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>',
+        propose: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
+        practise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11v8H9l-4 3v-3H4z"/><path d="M15 9h5v8h-1v3l-4-3h-4v-2"/></svg>',
+        share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM18 14h2.5M14 18v2.5"/></svg>',
+        analyst: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L12 14.9l-5 2.8 1.2-5.6L4 8.3l5.6-.6z"/><path d="M8 21h8"/></svg>',
+        lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+      };
+
+      /* ---------------- Content ---------------- */
+      var STOPS = [
+        {
+          id: "research", stage: "Research", name: "Insight Observatory", feature: "Rae Chat",
+          x: 105, y: 598,
+          intro: "Meet your customer: <strong>Kopi Kilat</strong>, a coffee chain with 80 outlets (made up for this game). They want every outlet connected, and your first meeting is tomorrow. Start at the Insight Observatory.",
+          media: "assets/gifs/rae-chat.gif", mediaAlt: "Rae Chat answering “Tell me about Maybank” with a structured briefing, sources and follow-up questions",
+          caption: "Ask Rae anything about a customer, a product or an industry. It answers from CelcomDigi’s own knowledge, with sources and suggested follow-up questions. Two extra modes help too: <strong>Web Search</strong> for today’s news, and <strong>Thinking</strong> for tougher, multi-step questions.",
+          scenario: "Kopi Kilat announced 20 new outlets this morning.",
+          question: "Which Rae Chat mode will pick up news that fresh?",
+          options: ["Web Search", "Ask Rae", "Thinking"], answer: 0,
+          explain: "Web Search pulls live news from the internet. Ask Rae is your go-to for CelcomDigi products, accounts and research, and Thinking works through complex questions step by step.",
+          why: "Pick the right mode and you walk into every meeting with the latest context."
+        },
+        {
+          id: "qualify", stage: "Qualify", name: "Intel HQ", feature: "Account Research + Persona Profiles",
+          x: 296, y: 500,
+          intro: "You’re briefed. Now find out what really matters to Kopi Kilat before you pitch anything. Next stop: Intel HQ.",
+          media: "assets/quest/qualify-account-research.jpg", mediaAlt: "Rae account research showing a suggested engagement approach for a key account",
+          caption: "For key accounts, Rae has analyst-written account research: the customer’s priorities, where CelcomDigi can help, and a <strong>suggested way to engage</strong>. Persona Profiles add what each decision-maker, like a CFO or CTO, cares about most.",
+          scenario: "Kopi Kilat is now a key account, and the big meeting is next week.",
+          question: "What can Rae’s account research give you before you walk in?",
+          options: ["Their priorities and a suggested way to approach the deal", "Their competitors’ private pricing", "Only their address and company logo"], answer: 0,
+          explain: "Account research turns background reading into a plan: what matters to the customer, where CelcomDigi fits, and how to open the conversation.",
+          why: "Walk in knowing what the customer cares about, and the meeting becomes a real conversation."
+        },
+        {
+          id: "propose", stage: "Propose", name: "Proposal Workshop", feature: "Proposal Generator",
+          x: 108, y: 396,
+          intro: "You know their priorities. Time to put an offer on paper. Next stop: the Proposal Workshop.",
+          media: "assets/gifs/proposal-generator.gif", mediaAlt: "Rae Proposal Generator building a proposal for a coffee retail chain on a live canvas",
+          caption: "Type the customer’s name. Rae researches the company, matches their challenges to CelcomDigi solutions and writes a <strong>full proposal</strong> you can edit, then download as Word or PowerPoint. Add your own documents any time.",
+          scenario: "Kopi Kilat wants a proposal to connect all 80 outlets.",
+          question: "What’s the one thing Rae needs from you to get started?",
+          options: ["The company name", "A 20-page brief from the customer", "Last year’s proposal to copy from"], answer: 0,
+          explain: "Rae does the research and the first draft. You review it, refine it in chat and download it.",
+          why: "Proposals that took about 2 hours now take under 10 minutes."
+        },
+        {
+          id: "practise", stage: "Practise", name: "Practice Arena", feature: "Sales Simulator",
+          x: 292, y: 290,
+          intro: "Proposal ready. But their CFO is known as a tough negotiator. Next stop: the Practice Arena.",
+          media: "assets/gifs/sales-simulator.gif", mediaAlt: "Rae Sales Simulator building a practice persona and scoring the conversation",
+          caption: "Build a practice customer by choosing their <strong>role, industry, buying behaviour and personality</strong>. Talk it through by text or voice. Type “end” and Rae scores you, with strengths, gaps and an action plan.",
+          scenario: "Kopi Kilat’s CFO is cost-sensitive and negotiates hard.",
+          question: "What can you set up in Sales Simulator to rehearse with someone like them?",
+          options: ["Their role and industry", "Their buying behaviour", "Their personality, like cost-sensitive", "All of the above"], answer: 3, fixedOrder: true,
+          explain: "You can shape the practice customer on all four, so the rehearsal feels like the real meeting.",
+          why: "Make your mistakes in practice, where they cost nothing."
+        },
+        {
+          id: "share", stage: "Share", name: "Share Harbour", feature: "Digital Profile",
+          x: 104, y: 186,
+          intro: "You’re ready for the room. Now keep the conversation going after the meeting. Next stop: Share Harbour.",
+          media: "assets/gifs/digital-profile.gif", mediaAlt: "Rae Digital Profile shown as a mobile business card with a QR code for sharing",
+          caption: "Your Digital Profile is a CelcomDigi-branded <strong>digital business card</strong>. Share it by QR code or link, and attach up to 3 files, like a brochure or a proposal. Rae can even suggest your bio.",
+          scenario: "You meet Kopi Kilat’s IT head at an event, and you’re out of business cards.",
+          question: "What’s your move?",
+          options: ["Show your Digital Profile QR code so they save your details and files", "Write your number on a napkin", "Promise to email them later"], answer: 0,
+          explain: "One scan and they have your contact and your content, ready when they get back to the office.",
+          why: "The conversation keeps going long after the event ends."
+        },
+        {
+          id: "analyst", stage: "Bonus combo", name: "Analyst Tower", feature: "Ask an Analyst + DocuChat",
+          x: 266, y: 84,
+          intro: "One last challenge, and it takes two Rae features working together. Final stop: the Analyst Tower.",
+          media: "assets/gifs/content-engine.gif", mediaAlt: "Rae content library with analyst-written research organised by tags",
+          caption: "Need content Rae doesn’t have yet? <strong>Ask an Analyst</strong> (the Content Request button in Rae) and the analyst team creates on-brand research, like InfoBriefs, usually in 2 to 3 business days. Then <strong>DocuChat</strong> turns any PDF into a smart link: customers can ask it questions without logging in, and you see what they read.",
+          scenario: "Kopi Kilat asks: “What are other F&B chains doing with digital?” Rae doesn’t have that report yet.",
+          question: "Which combo answers them and shows you what they care about?",
+          options: ["Ask an Analyst for an InfoBrief, then share it as a DocuChat link", "Search online and forward some links on WhatsApp", "Run Sales Simulator, then update your Digital Profile"], answer: 0,
+          explain: "The customer gets expert, on-brand content they can ask questions of. You see what they read and asked, so your follow-up hits the mark.",
+          why: "Rae works best when features work together, from research all the way to follow-up."
+        }
+      ];
+      var CAMP = { x: 206, y: 690 };
+      var MAX_BONUS = 50, BASE = 100, TIME_LIMIT = 20;
+      var RANKS = [
+        { min: 6, title: "Rae Code Cracker", copy: "A perfect run. You know how Rae takes a deal from first research to follow-up." },
+        { min: 4, title: "Rae Explorer", copy: "You’ve seen most of what Rae can do. Try it live to unlock the rest." },
+        { min: 0, title: "Rae Rookie", copy: "Every expert starts somewhere. See Rae live at the booth and you’ll be flying." }
+      ];
+
+      /* ---------------- State ---------------- */
+      var STORE_KEY = "raeQuest.v1";
+      var state = freshState();
+
+      function freshState() {
+        return { view: "intro", at: 0, results: [], score: 0, code: makeCode(), finishedAt: null };
+      }
+      function makeCode() {
+        var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", s = "";
+        for (var i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
+        return "RQ-" + s;
+      }
+      function save() { try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+      function load() {
+        try {
+          var raw = sessionStorage.getItem(STORE_KEY);
+          if (!raw) return null;
+          var s = JSON.parse(raw);
+          if (!s || !Array.isArray(s.results) || typeof s.at !== "number") return null;
+          return s;
+        } catch (e) { return null; }
+      }
+      function isClaimed(code) { try { return localStorage.getItem("raeQuest.claimed." + code) === "1"; } catch (e) { return false; } }
+      function setClaimed(code) { try { localStorage.setItem("raeQuest.claimed." + code, "1"); } catch (e) {} }
+
+      /* ---------------- Helpers ---------------- */
+      var $ = function (id) { return document.getElementById(id); };
+      var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var SVGNS = "http://www.w3.org/2000/svg";
+      function el(tag, attrs, parent) {
+        var n = document.createElementNS(SVGNS, tag);
+        for (var k in attrs) n.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(n);
+        return n;
+      }
+      function shuffle(a) {
+        for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+        return a;
+      }
+      var toastTimer;
+      function toast(msg) {
+        var t = $("toast"); t.textContent = msg; t.classList.add("show");
+        clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1800);
+      }
+
+      /* ---------------- Code slots ---------------- */
+      function renderSlots(container, opts) {
+        container.innerHTML = "";
+        STOPS.forEach(function (s, i) {
+          var d = document.createElement("div");
+          d.className = "slot";
+          var r = state.results[i];
+          if (opts && opts.preview) { d.textContent = "?"; }
+          else if (r) { d.classList.add(r.correct ? "is-correct" : "is-visited"); d.innerHTML = ICONS[s.id]; }
+          else { d.textContent = "?"; if (i === state.at && state.view === "map") d.classList.add("is-current"); }
+          d.setAttribute("aria-label", s.stage + (r ? (r.correct ? ": cracked" : ": visited") : ": locked"));
+          container.appendChild(d);
+        });
+      }
+
+      /* ---------------- Map drawing ---------------- */
+      var map = $("map");
+      var legs = [], landmarkEls = [], avatar, avatarPos = { x: CAMP.x, y: CAMP.y };
+
+      function isoBox(g, x, y, a, h, c) {
+        // x,y = front-bottom centre of the base diamond's top vertex offset; a = half width
+        var top = [[x - a, y - h], [x, y + a / 2 - h], [x + a, y - h], [x, y - a / 2 - h]];
+        el("polygon", { points: [[x - a, y], [x, y + a / 2], [x, y + a / 2 - h], [x - a, y - h]].join(" "), fill: c.l || "#0e3fa6" }, g);
+        el("polygon", { points: [[x, y + a / 2], [x + a, y], [x + a, y - h], [x, y + a / 2 - h]].join(" "), fill: c.r || "#082c7c" }, g);
+        el("polygon", { points: top.join(" "), fill: c.t || "#3f82f0" }, g);
+      }
+      function windows(g, x, y, a, h, cols, rows) {
+        for (var side = 0; side < 2; side++) {
+          for (var ci = 0; ci < cols; ci++) {
+            for (var ri = 0; ri < rows; ri++) {
+              var u = (ci + 0.6) / (cols + 0.2), v = (ri + 0.7) / (rows + 0.4);
+              var px = side === 0 ? x - a + a * u : x + a * u;
+              var py = side === 0 ? y + (a / 2) * u : y + a / 2 - (a / 2) * u;
+              var on = ((ci * 7 + ri * 3 + side * 5 + Math.round(x)) % 4) !== 0;
+              var w = el("rect", { x: px - 1.6, y: py - h * v - 2.2, width: 3.2, height: 3.6, rx: 0.6, fill: on ? "#ffe000" : "#1d4fb8", opacity: on ? 0.9 : 0.8 }, g);
+              if (on && (ci + ri) % 3 === 0) { w.setAttribute("class", "twinkle"); w.style.animationDelay = ((ci + ri + side) * 0.4) + "s"; }
+            }
+          }
+        }
+      }
+
+      var ISLAND = [[46, 132], [118, 42], [236, 22], [352, 50], [386, 170], [368, 300], [392, 430], [372, 570], [336, 690], [206, 714], [72, 700], [22, 580], [40, 450], [16, 320], [26, 214]];
+      function smoothPath(pts) {
+        var n = pts.length, d = "M" + pts[0][0] + "," + pts[0][1];
+        for (var i = 0; i < n; i++) {
+          var p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+          var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+          var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+          d += " C" + c1x.toFixed(1) + "," + c1y.toFixed(1) + " " + c2x.toFixed(1) + "," + c2y.toFixed(1) + " " + p2[0] + "," + p2[1];
+        }
+        return d + "Z";
+      }
+      function legD(a, b) {
+        var dy = (b.y - a.y) * 0.55;
+        return "M" + a.x + "," + a.y + " C" + a.x + "," + (a.y + dy) + " " + b.x + "," + (b.y - dy) + " " + b.x + "," + b.y;
+      }
+
+      function drawMap() {
+        map.innerHTML = "";
+        var defs = el("defs", {}, map);
+        var ig = el("linearGradient", { id: "islandGrad", x1: "0", y1: "0", x2: "0", y2: "1" }, defs);
+        el("stop", { offset: "0", "stop-color": "#0a2c82" }, ig);
+        el("stop", { offset: "1", "stop-color": "#072063" }, ig);
+        var tg = el("radialGradient", { id: "towerGlow" }, defs);
+        el("stop", { offset: "0", "stop-color": "#ffe000", "stop-opacity": "0.45" }, tg);
+        el("stop", { offset: "1", "stop-color": "#ffe000", "stop-opacity": "0" }, tg);
+        var clip = el("clipPath", { id: "islandClip" }, defs);
+        var islandD = smoothPath(ISLAND);
+        el("path", { d: islandD }, clip);
+
+        // Island (cliff + surface)
+        el("path", { d: islandD, fill: "#021240", transform: "translate(0 12)" }, map);
+        el("path", { d: islandD, fill: "#041a58", transform: "translate(0 6)" }, map);
+        var island = el("path", { d: islandD, fill: "url(#islandGrad)", stroke: "rgba(185,232,248,0.35)", "stroke-width": "1.5" }, map);
+
+        // Grid
+        var grid = el("g", { "clip-path": "url(#islandClip)", stroke: "rgba(185,232,248,0.07)", "stroke-width": "1" }, map);
+        for (var gx = -400; gx < 800; gx += 28) {
+          el("line", { x1: gx, y1: 0, x2: gx + 720, y2: 720 * 0.5 + 360 }, grid);
+          el("line", { x1: gx, y1: 0, x2: gx - 720, y2: 720 * 0.5 + 360 }, grid);
+        }
+
+        // Water bay near Share Harbour
+        var water = el("g", { "clip-path": "url(#islandClip)" }, map);
+        el("ellipse", { cx: 30, cy: 215, rx: 62, ry: 50, fill: "#0b56c4", opacity: "0.85" }, water);
+        el("ellipse", { cx: 30, cy: 215, rx: 62, ry: 50, fill: "none", stroke: "rgba(185,232,248,0.35)" }, water);
+        for (var wv = 0; wv < 3; wv++) {
+          var wpath = el("path", { d: "M" + (8 + wv * 6) + "," + (196 + wv * 14) + " q6,-4 12,0 t12,0", fill: "none", stroke: "#b9e8f8", "stroke-width": "1.4", "stroke-linecap": "round", opacity: "0.6", "class": "wave" }, water);
+          wpath.style.animationDelay = (wv * 0.6) + "s";
+        }
+
+        // Roads
+        var pts = [CAMP].concat(STOPS);
+        var roadG = el("g", {}, map);
+        legs = [];
+        for (var i = 1; i < pts.length; i++) {
+          var d = legD(pts[i - 1], pts[i]);
+          el("path", { d: d, fill: "none", stroke: "#020c33", "stroke-width": "20", "stroke-linecap": "round", transform: "translate(0 3)" }, roadG);
+          el("path", { d: d, fill: "none", stroke: "#13398f", "stroke-width": "15", "stroke-linecap": "round" }, roadG);
+          el("path", { d: d, fill: "none", stroke: "rgba(255,224,0,0.35)", "stroke-width": "2", "stroke-dasharray": "5 8", "stroke-linecap": "round" }, roadG);
+        }
+        for (var j = 1; j < pts.length; j++) {
+          var done = el("path", { d: legD(pts[j - 1], pts[j]), fill: "none", stroke: "#ffe000", "stroke-width": "4", "stroke-linecap": "round", "class": "road-done", opacity: "0.95" }, roadG);
+          var len = done.getTotalLength();
+          done.setAttribute("stroke-dasharray", len + " " + len);
+          done.setAttribute("stroke-dashoffset", String(len));
+          legs.push({ path: done, len: len });
+        }
+
+        // Decor: mini blocks + trees, placed away from roads and landmarks
+        var samples = [];
+        legs.forEach(function (L) { for (var s = 0; s <= 24; s++) { var p = L.path.getPointAtLength(L.len * s / 24); samples.push(p); } });
+        function clear(x, y, rRoad, rLm) {
+          for (var k = 0; k < samples.length; k++) { var dx = samples[k].x - x, dy = samples[k].y - y; if (dx * dx + dy * dy < rRoad * rRoad) return false; }
+          for (var m = 0; m < STOPS.length; m++) { var ex = STOPS[m].x - x, ey = STOPS[m].y - y; if (ex * ex + ey * ey < rLm * rLm) return false; }
+          var cx = CAMP.x - x, cy = CAMP.y - y; if (cx * cx + cy * cy < 30 * 30) return false;
+          if ((x - 30) * (x - 30) / (70 * 70) + (y - 215) * (y - 215) / (58 * 58) < 1) return false;
+          return island.isPointInFill ? island.isPointInFill(pointAt(x, y)) : true;
+        }
+        var decor = el("g", {}, map);
+        var seed = 7; function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+        var placed = [];
+        for (var tries = 0; tries < 900 && placed.length < 30; tries++) {
+          var x = 30 + rnd() * 340, y = 60 + rnd() * 630;
+          if (!clear(x, y, 24, 62)) continue;
+          var ok = true;
+          for (var q = 0; q < placed.length; q++) { var px = placed[q][0] - x, py = placed[q][1] - y; if (px * px + py * py < 26 * 26) { ok = false; break; } }
+          if (!ok) continue;
+          placed.push([x, y]);
+        }
+        placed.sort(function (a, b) { return a[1] - b[1]; });
+        placed.forEach(function (p, idx) {
+          var g = el("g", {}, decor);
+          if (idx % 3 === 0) {
+            el("ellipse", { cx: p[0], cy: p[1] + 3, rx: 7, ry: 3, fill: "rgba(0,0,0,0.25)" }, g);
+            el("circle", { cx: p[0], cy: p[1] - 4, r: 6.5, fill: "#0d63d6" }, g);
+            el("circle", { cx: p[0] - 2, cy: p[1] - 6, r: 3, fill: "#2aa8e8", opacity: "0.8" }, g);
+          } else {
+            var a = 8 + rnd() * 5, h = 8 + rnd() * 22;
+            isoBox(g, p[0], p[1], a, h, { t: idx % 2 ? "#2d6fe0" : "#1f59c9", l: "#0c3796", r: "#082a74" });
+            windows(g, p[0], p[1], a, h, 2, Math.max(1, Math.round(h / 10)));
+          }
+        });
+
+        // Camp start
+        var camp = el("g", {}, map);
+        el("ellipse", { cx: CAMP.x, cy: CAMP.y, rx: 22, ry: 10, fill: "rgba(42,168,232,0.18)", stroke: "rgba(185,232,248,0.35)" }, camp);
+        var st = el("text", { x: CAMP.x + 26, y: CAMP.y + 4, fill: "#b9e8f8", "font-size": "9", "font-weight": "800", "letter-spacing": "1.5", "font-family": "Manrope, Arial, sans-serif" }, camp);
+        st.textContent = "START";
+
+        // Landmarks (draw from top to bottom so nearer overlaps farther)
+        landmarkEls = [];
+        var order = STOPS.map(function (s, i) { return i; }).sort(function (a, b) { return STOPS[a].y - STOPS[b].y; });
+        var lmLayer = el("g", {}, map);
+        var nodes = [];
+        order.forEach(function (i) { nodes[i] = drawLandmark(lmLayer, STOPS[i], i); });
+        landmarkEls = nodes;
+
+        // Avatar
+        avatar = el("g", { id: "avatar", "pointer-events": "none" }, map);
+        el("ellipse", { cx: 0, cy: 2, rx: 11, ry: 4.5, fill: "rgba(0,0,0,0.35)" }, avatar);
+        var bob = el("g", { "class": "bob" }, avatar);
+        el("path", { d: "M0,0 C-9,-12 -13,-17 -13,-24 A13,13 0 1 1 13,-24 C13,-17 9,-12 0,0Z", fill: "#ffe000", stroke: "#001871", "stroke-width": "2.5" }, bob);
+        el("circle", { cx: 0, cy: -28, r: 3.6, fill: "#001871" }, bob);
+        el("path", { d: "M-6.5,-17 a6.5,6 0 0 1 13,0", fill: "#001871" }, bob);
+        setAvatar(avatarPos.x, avatarPos.y);
+      }
+
+      var svgPt;
+      function pointAt(x, y) {
+        if (!svgPt) svgPt = map.createSVGPoint ? map.createSVGPoint() : { x: 0, y: 0 };
+        svgPt.x = x; svgPt.y = y; return svgPt;
+      }
+
+      function drawLandmark(parent, s, i) {
+        var g = el("g", { "class": "lm locked", tabindex: "0", role: "button", "aria-label": s.name + ", " + s.stage + " stop" }, parent);
+        var x = s.x, y = s.y;
+        el("ellipse", { "class": "ring", cx: x, cy: y + 4, rx: 46, ry: 22, fill: "none", stroke: "#ffe000", "stroke-width": "2.5" }, g);
+        var body = el("g", { "class": "lm-body" }, g);
+        el("ellipse", { cx: x, cy: y + 4, rx: 44, ry: 21, fill: "rgba(42,168,232,0.14)", stroke: "rgba(185,232,248,0.3)" }, body);
+        el("ellipse", { cx: x, cy: y + 4, rx: 60, ry: 34, fill: "transparent" }, body); // bigger hit area
+
+        if (s.id === "research") {
+          isoBox(body, x, y + 6, 26, 18, {});
+          windows(body, x, y + 6, 26, 18, 3, 1);
+          var top = y + 6 - 18;
+          el("path", { d: "M" + (x - 19) + "," + top + " A19,17 0 0 1 " + (x + 19) + "," + top + " Z", fill: "#b9e8f8" }, body);
+          el("path", { d: "M" + (x - 19) + "," + top + " A19,17 0 0 1 " + (x + 19) + "," + top, fill: "none", stroke: "#fff", "stroke-width": "1", opacity: "0.6" }, body);
+          el("rect", { x: x - 3, y: top - 34, width: 7, height: 26, rx: 2.5, fill: "#001871", transform: "rotate(38 " + x + " " + (top - 8) + ")" }, body);
+          el("circle", { cx: x - 12, cy: top - 30, r: 2.2, fill: "#ffe000", "class": "twinkle" }, body);
+          el("circle", { cx: x + 16, cy: top - 22, r: 1.6, fill: "#ffe000", "class": "twinkle" }, body).style.animationDelay = "1s";
+        } else if (s.id === "qualify") {
+          isoBox(body, x, y + 8, 24, 44, { t: "#4b8cf5" });
+          windows(body, x, y + 8, 24, 44, 3, 4);
+          isoBox(body, x, y + 8 - 44, 12, 8, { t: "#b9e8f8", l: "#6fa8e8", r: "#4b86d0" });
+          // target sign
+          var sy = y + 8 - 44 - 30;
+          el("circle", { cx: x, cy: sy, r: 12, fill: "#fff", stroke: "#001871", "stroke-width": "2" }, body);
+          el("circle", { cx: x, cy: sy, r: 7, fill: "none", stroke: "#0064dc", "stroke-width": "2.5" }, body);
+          el("circle", { cx: x, cy: sy, r: 2.6, fill: "#ffe000", stroke: "#001871", "stroke-width": "1" }, body);
+          el("line", { x1: x, y1: sy + 12, x2: x, y2: sy + 22, stroke: "#b9e8f8", "stroke-width": "2" }, body);
+        } else if (s.id === "propose") {
+          isoBox(body, x, y + 6, 30, 18, { t: "#3f82f0" });
+          windows(body, x, y + 6, 30, 18, 3, 1);
+          isoBox(body, x - 8, y + 6 - 18 + 4, 10, 14, { t: "#b9e8f8", l: "#6fa8e8", r: "#4b86d0" });
+          var doc = el("g", { "class": "float" }, body);
+          doc.style.transformBox = "fill-box"; doc.style.transformOrigin = "center";
+          var dx = x + 4, dy = y - 58;
+          el("rect", { x: dx - 13, y: dy - 16, width: 26, height: 32, rx: 3, fill: "#fff", stroke: "#001871", "stroke-width": "2" }, doc);
+          el("rect", { x: dx - 8, y: dy - 10, width: 16, height: 3, rx: 1.5, fill: "#0064dc" }, doc);
+          el("rect", { x: dx - 8, y: dy - 3, width: 16, height: 2, rx: 1, fill: "#b9c7dd" }, doc);
+          el("rect", { x: dx - 8, y: dy + 2, width: 12, height: 2, rx: 1, fill: "#b9c7dd" }, doc);
+          el("rect", { x: dx - 8, y: dy + 7, width: 9, height: 3, rx: 1.5, fill: "#ffe000" }, doc);
+        } else if (s.id === "practise") {
+          var ay = y + 2;
+          el("ellipse", { cx: x, cy: ay + 12, rx: 40, ry: 19, fill: "#082a78" }, body);
+          el("rect", { x: x - 40, y: ay - 2, width: 80, height: 14, fill: "#0e3fa6" }, body);
+          el("ellipse", { cx: x, cy: ay - 2, rx: 40, ry: 19, fill: "#3f82f0" }, body);
+          el("ellipse", { cx: x, cy: ay - 2, rx: 29, ry: 12.5, fill: "#0a4fb8" }, body);
+          el("ellipse", { cx: x, cy: ay - 2, rx: 29, ry: 12.5, fill: "none", stroke: "#b9e8f8", "stroke-width": "1", opacity: "0.6" }, body);
+          el("line", { x1: x, y1: ay - 14.5, x2: x, y2: ay + 10.5, stroke: "#b9e8f8", "stroke-width": "1", opacity: "0.6" }, body);
+          el("circle", { cx: x, cy: ay - 2, r: 4, fill: "none", stroke: "#b9e8f8", "stroke-width": "1", opacity: "0.6" }, body);
+          [[-34, 0], [34, 0]].forEach(function (f, k) {
+            el("line", { x1: x + f[0], y1: ay - 4, x2: x + f[0], y2: ay - 34, stroke: "#b9e8f8", "stroke-width": "2" }, body);
+            var flag = el("path", { d: "M" + (x + f[0]) + "," + (ay - 34) + " l14,4 l-14,5z", fill: "#ffe000", "class": "wave" }, body);
+            flag.style.animationDelay = (k * 0.7) + "s";
+          });
+          // two chat bubbles
+          el("rect", { x: x - 16, y: ay - 44, width: 18, height: 12, rx: 4, fill: "#fff" }, body);
+          el("rect", { x: x + 0, y: ay - 36, width: 18, height: 12, rx: 4, fill: "#ffe000" }, body);
+        } else if (s.id === "share") {
+          // pier into the water
+          el("polygon", { points: [[x - 18, y + 6], [x - 54, y - 12], [x - 50, y - 14], [x - 14, y + 4]].join(" "), fill: "#8a6a3a" }, body);
+          // lighthouse
+          var lx = x + 4, ly = y + 8;
+          el("polygon", { points: [[lx - 11, ly], [lx + 11, ly], [lx + 7, ly - 52], [lx - 7, ly - 52]].join(" "), fill: "#f5f8fd" }, body);
+          el("polygon", { points: [[lx - 10, ly - 12], [lx + 10, ly - 12], [lx + 9.2, ly - 22], [lx - 9.2, ly - 22]].join(" "), fill: "#0064dc" }, body);
+          el("polygon", { points: [[lx - 8.4, ly - 32], [lx + 8.4, ly - 32], [lx + 7.8, ly - 40], [lx - 7.8, ly - 40]].join(" "), fill: "#0064dc" }, body);
+          el("rect", { x: lx - 9, y: ly - 62, width: 18, height: 10, rx: 2, fill: "#001871" }, body);
+          el("circle", { cx: lx, cy: ly - 57, r: 4, fill: "#ffe000", "class": "beacon" }, body);
+          el("polygon", { points: [[lx, ly - 57], [lx - 70, ly - 74], [lx - 70, ly - 44]].join(" "), fill: "#ffe000", "class": "beam" }, body);
+          el("path", { d: "M" + (lx - 10) + "," + (ly - 62) + " L" + lx + "," + (ly - 70) + " L" + (lx + 10) + "," + (ly - 62) + "Z", fill: "#0064dc" }, body);
+          // QR sign
+          el("rect", { x: x + 20, y: y - 26, width: 22, height: 22, rx: 3, fill: "#fff", stroke: "#001871", "stroke-width": "1.5" }, body);
+          [[23, -23], [33, -23], [23, -13]].forEach(function (q) { el("rect", { x: x + q[0], y: y + q[1], width: 6, height: 6, fill: "#001871" }, body); });
+          el("rect", { x: x + 34, y: y - 12, width: 4, height: 4, fill: "#0064dc" }, body);
+          el("line", { x1: x + 31, y1: y - 4, x2: x + 31, y2: y + 6, stroke: "#b9e8f8", "stroke-width": "2" }, body);
+        } else if (s.id === "analyst") {
+          el("circle", { cx: x, cy: y - 50, r: 58, fill: "url(#towerGlow)" }, body);
+          isoBox(body, x, y + 10, 20, 82, { t: "#b9e8f8", l: "#1a4fbf", r: "#0b318a" });
+          windows(body, x, y + 10, 20, 82, 2, 8);
+          isoBox(body, x, y + 10 - 82, 12, 10, { t: "#ffe000", l: "#d4b800", r: "#a89100" });
+          el("line", { x1: x, y1: y + 10 - 92 - 6, x2: x, y2: y + 10 - 92 - 26, stroke: "#b9e8f8", "stroke-width": "2" }, body);
+          el("circle", { cx: x, cy: y + 10 - 92 - 28, r: 4.5, fill: "#ffe000", "class": "beacon" }, body);
+          el("circle", { cx: x - 30, cy: y - 70, r: 1.8, fill: "#ffe000", "class": "twinkle" }, body);
+          el("circle", { cx: x + 32, cy: y - 40, r: 1.8, fill: "#ffe000", "class": "twinkle" }, body).style.animationDelay = ".8s";
+        }
+
+        // Label
+        var lg = el("g", { "class": "lm-label" }, g);
+        var rect = el("rect", { rx: 9, ry: 9 }, lg);
+        var nameT = el("text", { "class": "name", x: x, y: y + 40, "text-anchor": "middle" }, lg);
+        nameT.textContent = s.name;
+        var stageT = el("text", { "class": "stage", x: x, y: y + 51, "text-anchor": "middle" }, lg);
+        stageT.textContent = (i + 1) + " · " + s.stage.toUpperCase();
+        var w = 0;
+        try { w = Math.max(nameT.getComputedTextLength(), stageT.getComputedTextLength()); } catch (e) { w = s.name.length * 6.4; }
+        if (!w) w = s.name.length * 6.4;
+        rect.setAttribute("x", x - w / 2 - 10); rect.setAttribute("y", y + 28);
+        rect.setAttribute("width", w + 20); rect.setAttribute("height", 28);
+
+        // Badge (done) + lock
+        var badge = el("g", { "class": "badge" }, g);
+        var bx = x + w / 2 + 8, by = y + 28;
+        el("circle", { cx: bx, cy: by, r: 9, fill: "#ffe000", stroke: "#001871", "stroke-width": "2", "class": "badge-bg" }, badge);
+        el("path", { d: "M" + (bx - 4) + "," + by + " l3,3 l5,-6", fill: "none", stroke: "#001871", "stroke-width": "2.4", "stroke-linecap": "round", "stroke-linejoin": "round" }, badge);
+        var lock = el("g", { "class": "lock" }, g);
+        el("circle", { cx: bx, cy: by, r: 8, fill: "#001247", stroke: "rgba(185,232,248,0.5)" }, lock);
+        el("rect", { x: bx - 3.5, y: by - 1, width: 7, height: 5.5, rx: 1, fill: "#b9e8f8" }, lock);
+        el("path", { d: "M" + (bx - 2.2) + "," + (by - 1) + " v-1.8 a2.2,2.2 0 0 1 4.4,0 v1.8", fill: "none", stroke: "#b9e8f8", "stroke-width": "1.3" }, lock);
+
+        g.addEventListener("click", function () { onLandmark(i); });
+        g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onLandmark(i); } });
+        return g;
+      }
+
+      function setAvatar(x, y) {
+        avatarPos = { x: x, y: y };
+        if (avatar) avatar.setAttribute("transform", "translate(" + x.toFixed(2) + " " + y.toFixed(2) + ")");
+      }
+
+      function refreshMap() {
+        landmarkEls.forEach(function (g, i) {
+          g.classList.remove("locked", "next", "done");
+          if (state.results[i]) g.classList.add("done");
+          else if (i === state.at) g.classList.add("next");
+          else g.classList.add("locked");
+          var r = state.results[i];
+          var bg = g.querySelector(".badge-bg");
+          if (bg) bg.setAttribute("fill", r && !r.correct ? "#b9e8f8" : "#ffe000");
+        });
+        legs.forEach(function (L, i) { L.path.setAttribute("stroke-dashoffset", i < state.at ? "0" : String(L.len)); });
+        var here = state.at === 0 ? CAMP : STOPS[state.at - 1];
+        if (!traveling) setAvatar(here.x, here.y);
+      }
+
+      /* ---------------- Story card ---------------- */
+      function refreshStory() {
+        var s = STOPS[state.at];
+        if (!s) return;
+        $("story-kicker").textContent = "Stop " + (state.at + 1) + " of " + STOPS.length + " · " + s.stage;
+        $("story-text").innerHTML = s.intro;
+        $("travel-btn").innerHTML = "Travel to " + s.name + ' <span aria-hidden="true">→</span>';
+        $("score-top").textContent = state.score;
+        renderSlots($("hud-code"));
+      }
+
+      /* ---------------- Travel ---------------- */
+      var traveling = false;
+      function onLandmark(i) {
+        if (traveling || sheetOpen) return;
+        if (state.results[i]) { toast("Already cracked. Keep going!"); return; }
+        if (i !== state.at) { toast("Clear the glowing stop first"); return; }
+        travel();
+      }
+      function travel() {
+        if (traveling || sheetOpen || state.view !== "map" || state.at >= STOPS.length) return;
+        traveling = true;
+        var L = legs[state.at];
+        var dur = reduceMotion ? 50 : Math.min(1500, Math.max(850, L.len * 5));
+        var t0 = null;
+        track("quest_travel", { stop_name: STOPS[state.at].name, stop_index: state.at + 1 });
+        function step(ts) {
+          if (t0 === null) t0 = ts;
+          var t = Math.min(1, (ts - t0) / dur);
+          var e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+          var p = L.path.getPointAtLength(L.len * e);
+          setAvatar(p.x, p.y);
+          L.path.setAttribute("stroke-dashoffset", String(L.len * (1 - e)));
+          if (t < 1) requestAnimationFrame(step);
+          else { traveling = false; openSheet(state.at); }
+        }
+        requestAnimationFrame(step);
+      }
+
+      /* ---------------- Sheet ---------------- */
+      var sheetOpen = false, timerRAF = null, qStart = 0, answered = false, currentOptions = [];
+      function openSheet(i) {
+        var s = STOPS[i];
+        sheetOpen = true; answered = false;
+        $("sheet-icon").innerHTML = ICONS[s.id];
+        $("sheet-kicker").textContent = "ExploRae · Stop " + (i + 1) + " of " + STOPS.length + " · " + s.stage;
+        $("sheet-title").textContent = s.name;
+        $("sheet-feature").textContent = s.feature;
+        var img = $("sheet-media"); img.src = s.media; img.alt = s.mediaAlt;
+        $("sheet-caption").innerHTML = s.caption;
+        $("phase-explore").hidden = false;
+        $("phase-question").hidden = true;
+        $("result").className = "result";
+        $("sheet").classList.add("open");
+        $("sheet-panel").scrollTop = 0;
+        setTimeout(function () { $("challenge-btn").focus({ preventScroll: true }); }, 50);
+        track("quest_stop_open", { stop_name: s.name, stop_index: i + 1 });
+      }
+
+      function startQuestion() {
+        var i = state.at, s = STOPS[i];
+        $("phase-explore").hidden = true;
+        $("phase-question").hidden = false;
+        $("sheet-scenario").textContent = s.scenario;
+        $("sheet-question").textContent = s.question;
+        var idxs = s.options.map(function (_, k) { return k; });
+        if (!s.fixedOrder) shuffle(idxs);
+        currentOptions = idxs;
+        var box = $("options"); box.innerHTML = "";
+        idxs.forEach(function (k, pos) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "option"; b.dataset.k = k;
+          b.innerHTML = '<span class="key">' + "ABCD".charAt(pos) + "</span><span></span>";
+          b.lastChild.textContent = s.options[k];
+          b.addEventListener("click", function () { answer(k); });
+          box.appendChild(b);
+        });
+        $("sheet-panel").scrollTop = 0;
+        qStart = performance.now();
+        runTimer();
+        setTimeout(function () { var f = box.querySelector(".option"); if (f) f.focus({ preventScroll: true }); }, 50);
+      }
+
+      function bonusNow() {
+        var el2 = (performance.now() - qStart) / 1000;
+        return Math.max(0, Math.round(MAX_BONUS * (1 - el2 / TIME_LIMIT)));
+      }
+      function runTimer() {
+        cancelAnimationFrame(timerRAF);
+        function tick() {
+          var elapsed = (performance.now() - qStart) / 1000;
+          var frac = Math.max(0, 1 - elapsed / TIME_LIMIT);
+          $("timer-fill").style.transform = "scaleX(" + frac.toFixed(4) + ")";
+          var b = bonusNow();
+          $("timer-label").textContent = b > 0 ? "Speed bonus +" + b : "No rush now";
+          if (!answered && frac > 0) timerRAF = requestAnimationFrame(tick);
+        }
+        tick();
+      }
+
+      function answer(k) {
+        if (answered) return;
+        answered = true;
+        cancelAnimationFrame(timerRAF);
+        var i = state.at, s = STOPS[i];
+        var correct = k === s.answer;
+        var bonus = correct ? bonusNow() : 0;
+        var pts = correct ? BASE + bonus : 0;
+        Array.prototype.forEach.call($("options").children, function (b) {
+          var bk = +b.dataset.k;
+          b.disabled = true;
+          if (bk === s.answer) b.classList.add("is-right");
+          else if (bk === k) b.classList.add("is-wrong");
+          else b.classList.add("is-dim");
+        });
+        state.results[i] = { correct: correct, points: pts };
+        state.score += pts;
+        state.at = i + 1;
+        save();
+
+        var r = $("result");
+        r.className = "result show " + (correct ? "good" : "bad");
+        $("result-title").textContent = correct ? pick(["Spot on!", "Nailed it!", "Code fragment cracked!", "Exactly right!"]) : "Not quite";
+        $("result-points").textContent = correct ? "+" + pts + " pts" + (bonus ? " (incl. +" + bonus + " speed)" : "") : "+0 pts";
+        $("result-explain").textContent = (correct ? "" : "The answer: " + s.options[s.answer] + ". ") + s.explain;
+        $("result-why").textContent = s.why;
+        $("continue-btn").innerHTML = state.at >= STOPS.length ? 'Crack the code <span aria-hidden="true">→</span>' : 'Back to the map <span aria-hidden="true">→</span>';
+        $("score-top").textContent = state.score;
+        setTimeout(function () { r.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" }); $("continue-btn").focus({ preventScroll: true }); }, 60);
+        track("quest_answer", { stop_name: s.name, stop_index: i + 1, correct: correct, points: pts });
+      }
+      function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+      function closeSheet() {
+        $("sheet").classList.remove("open");
+        sheetOpen = false;
+        cancelAnimationFrame(timerRAF);
+      }
+
+      function afterResult() {
+        var finishedIdx = state.at - 1;
+        closeSheet();
+        if (state.at >= STOPS.length) { finish(); return; }
+        refreshMap();
+        refreshStory();
+        var slot = $("hud-code").children[finishedIdx];
+        if (slot) { slot.classList.remove("pop"); void slot.offsetWidth; slot.classList.add("pop"); }
+        $("travel-btn").focus({ preventScroll: true });
+      }
+
+      /* ---------------- Views ---------------- */
+      function show(view) {
+        state.view = view;
+        document.body.dataset.view = view;
+        ["intro", "map", "final"].forEach(function (v) { $("view-" + v).classList.toggle("is-active", v === view); });
+        document.body.classList.toggle("can-scroll", view !== "map");
+        save();
+      }
+
+      function startQuest() {
+        state = freshState();
+        show("map");
+        drawMap();
+        refreshMap();
+        refreshStory();
+        track("quest_start", {});
+        setTimeout(function () { $("travel-btn").focus({ preventScroll: true }); }, 50);
+      }
+
+      function finish() {
+        if (!state.finishedAt) {
+          state.finishedAt = Date.now();
+          var correctN = state.results.filter(function (r) { return r && r.correct; }).length;
+          track("quest_complete", { score: state.score, correct: correctN });
+        }
+        show("final");
+        renderFinal(true);
+      }
+
+      var clockTimer;
+      function renderFinal(animate) {
+        var correctN = state.results.filter(function (r) { return r && r.correct; }).length;
+        var rank = RANKS.filter(function (r) { return correctN >= r.min; })[0];
+        $("final-rank").textContent = rank.title;
+        $("final-rank-copy").textContent = rank.copy;
+        $("claim-code").textContent = state.code;
+        $("claim-correct").textContent = correctN + "/6 correct";
+        renderSlots($("final-code"));
+        var ul = $("unlocked"); ul.innerHTML = "";
+        STOPS.forEach(function (s) {
+          var li = document.createElement("li");
+          li.innerHTML = ICONS[s.id] + "<span></span>";
+          li.lastChild.textContent = s.feature;
+          ul.appendChild(li);
+        });
+        $("claim").classList.toggle("claimed", isClaimed(state.code));
+        var target = state.score, out = $("final-score");
+        if (animate && !reduceMotion) {
+          var t0 = null;
+          (function count(ts) {
+            if (t0 === null) t0 = ts;
+            var t = Math.min(1, (ts - t0) / 1200);
+            out.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+            if (t < 1) requestAnimationFrame(count);
+          })(performance.now());
+          confetti();
+        } else { out.textContent = target; }
+        clearInterval(clockTimer);
+        var tickClock = function () {
+          var d = new Date();
+          $("claim-clock").textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (n) { return (n < 10 ? "0" : "") + n; }).join(":");
+        };
+        tickClock(); clockTimer = setInterval(tickClock, 1000);
+        window.scrollTo(0, 0); $("view-final").scrollTop = 0;
+      }
+
+      function confetti() {
+        var box = document.createElement("div"); box.className = "confetti"; box.setAttribute("aria-hidden", "true");
+        var colors = ["#ffe000", "#2aa8e8", "#b9e8f8", "#ffffff", "#0064dc"];
+        for (var i = 0; i < 70; i++) {
+          var p = document.createElement("i");
+          p.style.left = (Math.random() * 100) + "%";
+          p.style.background = colors[i % colors.length];
+          p.style.animationDuration = (1.8 + Math.random() * 1.8) + "s";
+          p.style.animationDelay = (Math.random() * 0.5) + "s";
+          p.style.transform = "rotate(" + (Math.random() * 360) + "deg)";
+          box.appendChild(p);
+        }
+        document.body.appendChild(box);
+        setTimeout(function () { box.remove(); }, 4200);
+      }
+
+      /* ---------------- Wiring ---------------- */
+      renderSlots($("intro-code"), { preview: true });
+      $("start-btn").addEventListener("click", startQuest);
+      $("travel-btn").addEventListener("click", travel);
+      $("challenge-btn").addEventListener("click", startQuestion);
+      $("continue-btn").addEventListener("click", afterResult);
+      $("replay-btn").addEventListener("click", function () {
+        track("quest_replay", {});
+        clearInterval(clockTimer);
+        try { sessionStorage.removeItem(STORE_KEY); } catch (e) {}
+        state = freshState();
+        show("intro");
+      });
+      $("playbook-link").addEventListener("click", function () { track("quest_playbook_click", {}); });
+      $("staff-btn").addEventListener("click", function () {
+        setClaimed(state.code);
+        $("claim").classList.add("claimed");
+        track("quest_gift_claimed", { score: state.score });
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (state.view !== "map") return;
+        if (sheetOpen) {
+          if (!answered && !$("phase-question").hidden) {
+            var n = "1234abcd".indexOf(e.key.toLowerCase());
+            if (n > -1) { var btn = $("options").children[n % 4]; if (btn) { e.preventDefault(); btn.click(); } }
+          }
+          return;
+        }
+        var moveKeys = ["ArrowUp", "ArrowRight", "ArrowLeft", "ArrowDown", "w", "a", "s", "d", "W", "A", "S", "D"];
+        var ae = document.activeElement;
+        var onControl = ae && (ae.tagName === "BUTTON" || ae.tagName === "A" || (ae.classList && ae.classList.contains("lm")));
+        if (moveKeys.indexOf(e.key) > -1 || ((e.key === "Enter" || e.key === " ") && !onControl)) {
+          e.preventDefault(); travel();
+        }
+      });
+
+      // Re-measure map labels once the brand font has loaded
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          if (state.view === "map" && !traveling) { drawMap(); refreshMap(); }
+        });
+      }
+
+      // Resume after an accidental refresh
+      var saved = load();
+      if (saved && saved.view === "map" && saved.at < STOPS.length) {
+        state = saved; show("map"); drawMap(); refreshMap(); refreshStory();
+      } else if (saved && saved.view === "final") {
+        state = saved; show("final"); renderFinal(false);
+      } else {
+        show("intro");
+      }
+    })();
+  </script>
+</body>
+</html>
