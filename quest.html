@@ -392,6 +392,60 @@
     .stat { padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: rgba(2, 16, 55, 0.55); }
     .stat small { display: block; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
     .stat b { display: block; margin-top: 4px; font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .card {
+      margin-top: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(2, 16, 55, 0.55);
+    }
+    .card h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 18px; font-weight: 800; }
+    .card h2 .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--yellow); color: #080808; font-size: 13px; }
+    .card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .tries { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .tries li {
+      padding: 11px 12px; border: 1px dashed rgba(185, 232, 248, 0.3); border-radius: 12px;
+      font-size: 14px; font-weight: 700; line-height: 1.35;
+    }
+    .tries li span { display: block; margin-bottom: 3px; color: var(--blue-soft); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+
+    .claim {
+      position: relative; overflow: hidden; margin-top: 14px; padding: 20px 18px; border-radius: 20px;
+      background: linear-gradient(135deg, var(--yellow), #fff3a0 45%, var(--yellow));
+      background-size: 220% 220%; animation: shimmer 4s ease-in-out infinite;
+      color: #080808;
+    }
+    @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .claim h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .claim p { margin: 0 0 14px; font-size: 14px; font-weight: 600; line-height: 1.45; }
+    .claim-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .claim-meta > span {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 11px; border-radius: 10px;
+      background: rgba(0, 20, 79, 0.9); color: #fff; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
+    }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #5cff9a; animation: twinkle 1.2s ease-in-out infinite; }
+    .staff-btn {
+      appearance: none; margin-top: 14px; padding: 8px 12px; border: 1px dashed rgba(0, 20, 79, 0.45); border-radius: 10px;
+      background: transparent; color: #001871; cursor: pointer; font-size: 12px; font-weight: 800;
+    }
+    .stamp {
+      position: absolute; right: 14px; top: 16px; display: none; padding: 6px 12px; border: 3px solid #001871; border-radius: 10px;
+      color: #001871; font-size: 18px; font-weight: 800; letter-spacing: 0.1em; transform: rotate(-10deg);
+    }
+    .claim.claimed .stamp { display: block; animation: pop 400ms var(--ease); }
+    .claim.claimed .staff-btn { display: none; }
+
+    .unlocked { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .unlocked li { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 999px; background: rgba(42, 168, 232, 0.16); font-size: 13px; font-weight: 700; }
+    .unlocked li svg { width: 15px; height: 15px; color: var(--yellow); }
+
+    /* celebration on a right answer */
+    .option.is-right { animation: rightPulse 700ms var(--ease); }
+    @keyframes rightPulse { 0% { transform: scale(1); } 35% { transform: scale(1.035); box-shadow: 0 0 0 0 rgba(255, 224, 0, 0.55); } 100% { transform: scale(1); box-shadow: 0 0 0 16px rgba(255, 224, 0, 0); } }
+    .result.good .points { animation: pop 500ms var(--ease) 120ms both; }
+    .spark-layer { position: fixed; inset: 0; z-index: 70; pointer-events: none; overflow: hidden; }
+    .spark { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; opacity: 0; animation: spark 760ms cubic-bezier(.15,.7,.3,1) forwards; }
+    .spark.star { border-radius: 2px; width: 9px; height: 9px; }
+    @keyframes spark { 0% { transform: translate(0,0) scale(.4); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(200deg); opacity: 0; } }
+    .float-pts { position: absolute; margin: -14px 0 0 -40px; width: 80px; text-align: center; color: var(--yellow); font-size: 22px; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,.45); animation: floatPts 1000ms ease-out forwards; }
+    @keyframes floatPts { 0% { transform: translateY(0) scale(.7); opacity: 0; } 20% { opacity: 1; transform: translateY(-8px) scale(1.15); } 100% { transform: translateY(-64px) scale(1); opacity: 0; } }
+
     .final-cta { margin-top: 22px; }
     .text-btn {
       appearance: none; display: block; margin: 12px auto 0; padding: 10px 14px; border: 0; background: none;
@@ -524,6 +578,33 @@
       <div class="stats">
         <div class="stat"><small>Time taken</small><b id="final-time">0:00</b></div>
         <div class="stat"><small>Correct answers</small><b id="final-correct">0/6</b></div>
+      </div>
+
+      <div class="card">
+        <h2>Try Rae live</h2>
+        <p>Head to the Rae demo screen at the booth and try one of these for real:</p>
+        <ul class="tries">
+          <li><span>Ask Rae</span>“Tell me about Maybank”</li>
+          <li><span>Proposal Generator</span>Build a proposal for a coffee chain in 10 minutes</li>
+          <li><span>Sales Simulator</span>Practise with a cost-sensitive CFO</li>
+        </ul>
+      </div>
+
+      <div class="claim" id="claim">
+        <div class="stamp">Claimed</div>
+        <h2>Claim your gift</h2>
+        <p>Show this screen to the Rae team at the booth.</p>
+        <div class="claim-meta">
+          <span><i class="live-dot" aria-hidden="true"></i><span id="claim-clock">00:00:00</span></span>
+          <span id="claim-score">0 pts</span>
+          <span id="claim-correct">0/6 correct</span>
+        </div>
+        <button class="staff-btn" id="staff-btn" type="button">Rae team only: mark as claimed</button>
+      </div>
+
+      <div class="card">
+        <h2>What you unlocked</h2>
+        <ul class="unlocked" id="unlocked"></ul>
       </div>
 
       <div class="final-cta">
@@ -1299,6 +1380,7 @@
         $("continue-btn").innerHTML = state.at >= STOPS.length ? 'Crack the code <span aria-hidden="true">→</span>' : 'Back to the map <span aria-hidden="true">→</span>';
         $("score-top").textContent = state.score;
         setTimeout(function () { r.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" }); $("continue-btn").focus({ preventScroll: true }); }, 60);
+        if (correct) celebrate($("options").querySelector(".is-right"));
         track("quest_answer", { stop_name: s.name, stop_index: i + 1, correct: correct, points: pts });
       }
       function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
@@ -1361,6 +1443,16 @@
         $("final-rank").textContent = rank.title;
         $("final-rank-copy").textContent = rank.copy;
         $("final-correct").textContent = correctN + "/" + STOPS.length;
+        $("claim-correct").textContent = correctN + "/" + STOPS.length + " correct";
+        $("claim-score").textContent = state.score + " pts";
+        var ul = $("unlocked"); ul.innerHTML = "";
+        STOPS.forEach(function (s) {
+          var li = document.createElement("li");
+          li.innerHTML = ICONS[s.id] + "<span></span>";
+          li.lastChild.textContent = s.feature;
+          ul.appendChild(li);
+        });
+        $("claim").classList.toggle("claimed", isClaimed());
         var tStat = $("final-time").parentNode;
         if (state.startedAt && state.finishedAt) { $("final-time").textContent = fmtTime(state.finishedAt - state.startedAt); tStat.hidden = false; }
         else { tStat.hidden = true; }
@@ -1375,7 +1467,39 @@
           })(performance.now());
           confetti();
         } else { out.textContent = target; }
+        clearInterval(clockTimer);
+        var tickClock = function () {
+          var d = new Date();
+          $("claim-clock").textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (n) { return (n < 10 ? "0" : "") + n; }).join(":");
+        };
+        tickClock(); clockTimer = setInterval(tickClock, 1000);
         window.scrollTo(0, 0); $("view-final").scrollTop = 0;
+      }
+      var clockTimer;
+      // claimed flag is keyed by this run's finish time, so a replay starts unclaimed
+      function claimKey() { return "raeQuest.claimed." + (state.finishedAt || 0); }
+      function isClaimed() { try { return localStorage.getItem(claimKey()) === "1"; } catch (e) { return false; } }
+      function setClaimed() { try { localStorage.setItem(claimKey(), "1"); } catch (e) {} }
+
+      // small burst from the correct option when someone gets it right
+      function celebrate(el) {
+        if (reduceMotion || !el) return;
+        var r = el.getBoundingClientRect(), cx = r.left + 30, cy = r.top + r.height / 2;
+        var layer = document.createElement("div"); layer.className = "spark-layer"; layer.setAttribute("aria-hidden", "true");
+        var colors = ["#ffe000", "#2aa8e8", "#b9e8f8", "#ffffff"];
+        for (var i = 0; i < 16; i++) {
+          var p = document.createElement("i"); p.className = "spark" + (i % 3 === 0 ? " star" : "");
+          var a = (Math.PI * 2 * i) / 16 + Math.random() * 0.4, d = 46 + Math.random() * 54;
+          p.style.left = cx + "px"; p.style.top = cy + "px";
+          p.style.background = colors[i % colors.length];
+          p.style.setProperty("--dx", Math.cos(a) * d + "px"); p.style.setProperty("--dy", Math.sin(a) * d + "px");
+          layer.appendChild(p);
+        }
+        var f = document.createElement("div"); f.className = "float-pts"; f.textContent = "+" + (state.results[state.at - 1] || {}).points;
+        f.style.left = cx + "px"; f.style.top = cy + "px"; layer.appendChild(f);
+        document.body.appendChild(layer);
+        setTimeout(function () { layer.remove(); }, 1100);
+        if (navigator.vibrate) { try { navigator.vibrate(18); } catch (e) {} }
       }
 
       function confetti() {
@@ -1400,7 +1524,13 @@
       $("travel-btn").addEventListener("click", travel);
       $("challenge-btn").addEventListener("click", startQuestion);
       $("continue-btn").addEventListener("click", afterResult);
+      $("staff-btn").addEventListener("click", function () {
+        setClaimed();
+        $("claim").classList.add("claimed");
+        track("quest_gift_claimed", { score: state.score });
+      });
       $("replay-btn").addEventListener("click", function () {
+        clearInterval(clockTimer);
         track("quest_replay", {});
         try { sessionStorage.removeItem(STORE_KEY); } catch (e) {}
         state = freshState();
