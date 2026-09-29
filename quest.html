@@ -209,7 +209,27 @@
         radial-gradient(1px 1px at 85% 60%, #fff, transparent), radial-gradient(1px 1px at 10% 80%, #b9e8f8, transparent),
         radial-gradient(1px 1px at 45% 90%, #fff, transparent), radial-gradient(1px 1px at 60% 50%, #fff, transparent);
     }
-    #map { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: manipulation; user-select: none; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+    #map.is-dragging { cursor: grabbing; }
+    .zoom-ctrl { position: absolute; right: 10px; bottom: 10px; z-index: 6; display: grid; gap: 6px; }
+    .zoom-btn {
+      appearance: none; display: grid; place-items: center; width: 42px; height: 42px; padding: 0;
+      border: 1px solid rgba(185, 232, 248, 0.32); border-radius: 12px; background: var(--glass-strong);
+      color: #fff; font-size: 22px; font-weight: 700; line-height: 1; cursor: pointer;
+      transition: background-color 160ms ease, opacity 160ms ease, transform 160ms var(--ease);
+    }
+    .zoom-btn svg { width: 18px; height: 18px; }
+    .zoom-btn:active:not(:disabled) { transform: scale(0.94); }
+    .zoom-btn:disabled { opacity: 0.35; cursor: default; }
+    .zoom-btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+    @media (hover: hover) { .zoom-btn:hover:not(:disabled) { background: rgba(0, 100, 220, 0.5); } }
+    .map-hint {
+      position: absolute; left: 10px; bottom: 10px; z-index: 6; max-width: calc(100% - 76px);
+      padding: 7px 11px; border-radius: 999px; background: var(--glass-strong); border: 1px solid var(--line);
+      color: var(--muted); font-size: 11px; font-weight: 700; pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+    .map-hint.gone { opacity: 0; }
 
     .toast {
       position: absolute; left: 50%; top: 12px; z-index: 5; transform: translate(-50%, -20px);
@@ -353,11 +373,11 @@
     .result .btn { margin-top: 8px; }
 
     /* ---------- Final ---------- */
-    .final { overflow: auto; justify-content: center; padding: 22px max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-    .final-inner { width: min(620px, 100%); margin: 0 auto; }
+    .final { overflow: auto; padding: 22px max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+    .final-inner { width: min(560px, 100%); margin: auto; }
     .final h1 { margin: 0; font-size: clamp(34px, 9vw, 54px); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
     .final h1 em { font-style: normal; color: var(--yellow); }
-    .final .code-row { margin: 18px 0 22px; }
+    .final-lead { margin: 14px 0 22px; color: var(--muted); font-size: 16px; line-height: 1.5; }
 
     .scorecard {
       display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: center;
@@ -368,49 +388,16 @@
     .rank { margin: 0; font-size: 20px; font-weight: 800; }
     .rank-copy { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 
-    .card {
-      margin-top: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(2, 16, 55, 0.55);
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .stat { padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: rgba(2, 16, 55, 0.55); }
+    .stat small { display: block; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+    .stat b { display: block; margin-top: 4px; font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .final-cta { margin-top: 22px; }
+    .text-btn {
+      appearance: none; display: block; margin: 12px auto 0; padding: 10px 14px; border: 0; background: none;
+      color: var(--blue-soft); cursor: pointer; font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;
     }
-    .card h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 18px; font-weight: 800; }
-    .card h2 .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--yellow); color: #080808; font-size: 13px; }
-    .card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.5; }
-    .tries { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-    .tries li {
-      padding: 11px 12px; border: 1px dashed rgba(185, 232, 248, 0.3); border-radius: 12px;
-      font-size: 14px; font-weight: 700; line-height: 1.35;
-    }
-    .tries li span { display: block; margin-bottom: 3px; color: var(--blue-soft); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-
-    .claim {
-      position: relative; overflow: hidden; margin-top: 14px; padding: 20px 18px; border-radius: 20px;
-      background: linear-gradient(135deg, var(--yellow), #fff3a0 45%, var(--yellow));
-      background-size: 220% 220%; animation: shimmer 4s ease-in-out infinite;
-      color: #080808;
-    }
-    @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-    .claim h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
-    .claim p { margin: 0 0 14px; font-size: 14px; font-weight: 600; line-height: 1.45; }
-    .claim-meta { display: flex; flex-wrap: wrap; gap: 8px; }
-    .claim-meta > span {
-      display: inline-flex; align-items: center; gap: 6px; padding: 8px 11px; border-radius: 10px;
-      background: rgba(0, 20, 79, 0.9); color: #fff; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0.04em;
-    }
-    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #5cff9a; animation: twinkle 1.2s ease-in-out infinite; }
-    .staff-btn {
-      appearance: none; margin-top: 14px; padding: 8px 12px; border: 1px dashed rgba(0, 20, 79, 0.45); border-radius: 10px;
-      background: transparent; color: #001871; cursor: pointer; font-size: 12px; font-weight: 800;
-    }
-    .stamp {
-      position: absolute; right: 14px; top: 16px; display: none; padding: 6px 12px; border: 3px solid #001871; border-radius: 10px;
-      color: #001871; font-size: 18px; font-weight: 800; letter-spacing: 0.1em; transform: rotate(-10deg);
-    }
-    .claim.claimed .stamp { display: block; animation: pop 400ms var(--ease); }
-    .claim.claimed .staff-btn { display: none; }
-
-    .unlocked { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-    .unlocked li { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 999px; background: rgba(42, 168, 232, 0.16); font-size: 13px; font-weight: 700; }
-    .unlocked li svg { width: 15px; height: 15px; color: var(--yellow); }
-    .final-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+    .text-btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 8px; }
 
     .confetti { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
     .confetti i { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation: fall linear forwards; }
@@ -511,6 +498,12 @@
       <div class="map-wrap">
         <svg id="map" viewBox="0 -36 400 756" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Map of Rae City with six stops"></svg>
         <div class="toast" id="toast" role="status"></div>
+        <div class="map-hint" id="map-hint">Pinch or scroll to zoom, drag to move</div>
+        <div class="zoom-ctrl" role="group" aria-label="Map zoom">
+          <button class="zoom-btn" id="zoom-in" type="button" aria-label="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button class="zoom-btn" id="zoom-out" type="button" aria-label="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <button class="zoom-btn" id="zoom-reset" type="button" aria-label="Reset map view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
       </div>
     </div>
   </section>
@@ -519,8 +512,8 @@
   <section class="view final" id="view-final" aria-labelledby="final-title">
     <div class="final-inner">
       <p class="eyebrow">Quest complete</p>
-      <h1 id="final-title">Rae Code <em>cracked!</em></h1>
-      <div class="code-row" id="final-code" aria-hidden="true"></div>
+      <h1 id="final-title">Thanks for <em>playing!</em></h1>
+      <p class="final-lead">You explored Rae City and followed one deal from first research to follow-up.</p>
 
       <div class="scorecard">
         <div class="big-score"><span id="final-score">0</span><small>of 900 pts</small></div>
@@ -528,36 +521,14 @@
         <p class="rank-copy" id="final-rank-copy"></p>
       </div>
 
-      <div class="card">
-        <h2><span class="n">1</span>Try Rae live</h2>
-        <p>Head to the Rae demo screen at the booth and try one of these for real:</p>
-        <ul class="tries">
-          <li><span>Ask Rae</span>“Tell me about Maybank”</li>
-          <li><span>Proposal Generator</span>Build a proposal for a coffee chain in 10 minutes</li>
-          <li><span>Sales Simulator</span>Practise with a cost-sensitive CFO</li>
-        </ul>
+      <div class="stats">
+        <div class="stat"><small>Time taken</small><b id="final-time">0:00</b></div>
+        <div class="stat"><small>Correct answers</small><b id="final-correct">0/6</b></div>
       </div>
 
-      <div class="claim" id="claim">
-        <div class="stamp">Claimed</div>
-        <h2>Claim your gift</h2>
-        <p>Show this screen to the Rae team at the booth.</p>
-        <div class="claim-meta">
-          <span id="claim-code">RQ-0000</span>
-          <span><i class="live-dot" aria-hidden="true"></i><span id="claim-clock">00:00:00</span></span>
-          <span id="claim-correct">0/6 correct</span>
-        </div>
-        <button class="staff-btn" id="staff-btn" type="button">Rae team only: mark as claimed</button>
-      </div>
-
-      <div class="card">
-        <h2>What you unlocked</h2>
-        <ul class="unlocked" id="unlocked"></ul>
-      </div>
-
-      <div class="final-actions">
-        <button class="btn secondary" id="replay-btn" type="button">Play again</button>
-        <a class="btn" id="playbook-link" href="index.html">Explore Rae <span aria-hidden="true">→</span></a>
+      <div class="final-cta">
+        <a class="btn block" id="try-link" href="https://rae.salesrechargekit.ai" target="_blank" rel="noopener noreferrer">Try Rae <span aria-hidden="true">↗</span></a>
+        <button class="text-btn" id="replay-btn" type="button">Play again</button>
       </div>
     </div>
   </section>
@@ -634,7 +605,7 @@
           media: "assets/gifs/rae-chat.gif", mediaAlt: "Rae Chat answering “Tell me about Maybank” with a structured briefing, sources and follow-up questions",
           caption: "Ask Rae anything about a customer, a product or an industry. It answers from CelcomDigi’s own knowledge, with sources and suggested follow-up questions. Two extra modes help too: <strong>Web Search</strong> for today’s news, and <strong>Thinking</strong> for tougher, multi-step questions.",
           scenario: "Kopi Kilat announced 20 new outlets this morning.",
-          question: "Which Rae Chat mode will pick up news that fresh?",
+          question: "Which Rae Chat mode will pick up fresh news?",
           options: ["Web Search", "Ask Rae", "Thinking"], answer: 0,
           explain: "Web Search pulls live news from the internet. Ask Rae is your go-to for CelcomDigi products, accounts and research, and Thinking works through complex questions step by step.",
           why: "Pick the right mode and you walk into every meeting with the latest context."
@@ -713,12 +684,7 @@
       var state = freshState();
 
       function freshState() {
-        return { view: "intro", at: 0, results: [], score: 0, code: makeCode(), finishedAt: null };
-      }
-      function makeCode() {
-        var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", s = "";
-        for (var i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
-        return "RQ-" + s;
+        return { view: "intro", at: 0, results: [], score: 0, startedAt: null, finishedAt: null };
       }
       function save() { try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
       function load() {
@@ -730,8 +696,6 @@
           return s;
         } catch (e) { return null; }
       }
-      function isClaimed(code) { try { return localStorage.getItem("raeQuest.claimed." + code) === "1"; } catch (e) { return false; } }
-      function setClaimed(code) { try { localStorage.setItem("raeQuest.claimed." + code, "1"); } catch (e) {} }
 
       /* ---------------- Helpers ---------------- */
       var $ = function (id) { return document.getElementById(id); };
@@ -919,6 +883,13 @@
         el("circle", { cx: 0, cy: -28, r: 3.6, fill: "#001871" }, bob);
         el("path", { d: "M-6.5,-17 a6.5,6 0 0 1 13,0", fill: "#001871" }, bob);
         setAvatar(avatarPos.x, avatarPos.y);
+
+        // Put everything in one camera group so zoom/pan is a single transform
+        var camG = el("g", { id: "cam" });
+        while (map.firstChild) camG.appendChild(map.firstChild);
+        map.appendChild(camG);
+        camEl = camG;
+        applyCam();
       }
 
       var svgPt;
@@ -1070,6 +1041,145 @@
         renderSlots($("hud-code"));
       }
 
+      /* ---------------- Zoom and pan ---------------- */
+      var VB = { x: 0, y: -36, w: 400, h: 756 };
+      var Z_MIN = 1, Z_MAX = 6;
+      var cam = { z: 1, x: 0, y: 0 }, camEl = null, camAnim = null;
+      var pointers = {}, gesture = null, justDragged = false;
+
+      function clampCam(c) {
+        c.z = Math.max(Z_MIN, Math.min(Z_MAX, c.z));
+        // keep the map covering the view: left/top edge no further in than the view edge, right/bottom no further out
+        c.x = Math.min(VB.x * (1 - c.z), Math.max((VB.x + VB.w) * (1 - c.z), c.x));
+        c.y = Math.min(VB.y * (1 - c.z), Math.max((VB.y + VB.h) * (1 - c.z), c.y));
+        if (c.z <= 1.0001) { c.z = 1; c.x = 0; c.y = 0; }
+        return c;
+      }
+      function applyCam() {
+        if (camEl) camEl.setAttribute("transform", "translate(" + cam.x.toFixed(2) + " " + cam.y.toFixed(2) + ") scale(" + cam.z.toFixed(4) + ")");
+        var zi = $("zoom-in"), zo = $("zoom-out"), zr = $("zoom-reset");
+        if (zi) { zi.disabled = cam.z >= Z_MAX - 0.001; zo.disabled = cam.z <= Z_MIN + 0.001; zr.disabled = cam.z <= Z_MIN + 0.001 && cam.x === 0 && cam.y === 0; }
+      }
+      function ctm() { var m = map.getScreenCTM(); return m || { a: 1, e: 0, f: 0, inverse: function () { return this; } }; }
+      function toUnits(cx, cy) {
+        var pt = map.createSVGPoint(); pt.x = cx; pt.y = cy;
+        var p = pt.matrixTransform(ctm().inverse());
+        return { x: p.x, y: p.y };
+      }
+      function setCam(z, x, y) {
+        var c = clampCam({ z: z, x: x, y: y });
+        cam.z = c.z; cam.x = c.x; cam.y = c.y;
+        applyCam();
+      }
+      // zoom to newZ keeping map point under unit-space point p fixed
+      function zoomAtUnits(p, newZ) {
+        var z = Math.max(Z_MIN, Math.min(Z_MAX, newZ));
+        var k = z / cam.z;
+        setCam(z, p.x - (p.x - cam.x) * k, p.y - (p.y - cam.y) * k);
+      }
+      function animateCam(z, x, y, ms) {
+        cancelAnimationFrame(camAnim);
+        var t = clampCam({ z: z, x: x, y: y });
+        if (reduceMotion || !ms) { setCam(t.z, t.x, t.y); return; }
+        var from = { z: cam.z, x: cam.x, y: cam.y }, t0 = null;
+        (function step(ts) {
+          if (t0 === null) t0 = ts;
+          var u = Math.min(1, (ts - t0) / ms), e = 1 - Math.pow(1 - u, 3);
+          setCam(from.z + (t.z - from.z) * e, from.x + (t.x - from.x) * e, from.y + (t.y - from.y) * e);
+          if (u < 1) camAnim = requestAnimationFrame(step);
+        })(performance.now());
+      }
+      function resetView(instant) { animateCam(1, 0, 0, instant ? 0 : 320); }
+      function zoomStep(factor) {
+        var c = { x: VB.x + VB.w / 2, y: VB.y + VB.h / 2 };
+        var z = Math.max(Z_MIN, Math.min(Z_MAX, cam.z * factor)), k = z / cam.z;
+        animateCam(z, c.x - (c.x - cam.x) * k, c.y - (c.y - cam.y) * k, 200);
+      }
+      var hintHidden = false;
+      function hideHint() {
+        if (hintHidden) return; hintHidden = true;
+        var h = $("map-hint"); if (h) h.classList.add("gone");
+      }
+
+      function pinchState() {
+        var ids = Object.keys(pointers), a = pointers[ids[0]], b = pointers[ids[1]];
+        var mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        return { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, mid: mid };
+      }
+      map.addEventListener("pointerdown", function (e) {
+        if (sheetOpen || traveling) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+        cancelAnimationFrame(camAnim);
+        var n = Object.keys(pointers).length;
+        if (n === 1) {
+          gesture = { mode: "tap", sx: e.clientX, sy: e.clientY, cx: cam.x, cy: cam.y };
+        } else if (n === 2) {
+          var ps = pinchState();
+          gesture = { mode: "pinch", dist: ps.dist, z: cam.z, anchor: toUnits(ps.mid.x, ps.mid.y), cx: cam.x, cy: cam.y };
+          justDragged = true;
+          try { map.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      });
+      map.addEventListener("pointermove", function (e) {
+        if (!pointers[e.pointerId]) return;
+        pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+        if (!gesture) return;
+        if (gesture.mode === "pinch" && Object.keys(pointers).length >= 2) {
+          var ps = pinchState();
+          var z = Math.max(Z_MIN, Math.min(Z_MAX, gesture.z * ps.dist / gesture.dist));
+          var cur = toUnits(ps.mid.x, ps.mid.y);
+          // keep the content point that started under the fingers under the fingers now
+          var cpx = (gesture.anchor.x - gesture.cx) / gesture.z, cpy = (gesture.anchor.y - gesture.cy) / gesture.z;
+          setCam(z, cur.x - cpx * z, cur.y - cpy * z);
+          hideHint();
+        } else if (gesture.mode === "tap" || gesture.mode === "pan") {
+          var dx = e.clientX - gesture.sx, dy = e.clientY - gesture.sy;
+          if (gesture.mode === "tap" && Math.hypot(dx, dy) > 7) {
+            gesture.mode = "pan"; justDragged = true;
+            try { map.setPointerCapture(e.pointerId); } catch (err) {}
+            map.classList.add("is-dragging");
+          }
+          if (gesture.mode === "pan") {
+            var k = ctm().a || 1;
+            setCam(cam.z, gesture.cx + dx / k, gesture.cy + dy / k);
+            hideHint();
+          }
+        }
+      });
+      function endPointer(e) {
+        if (!pointers[e.pointerId]) return;
+        delete pointers[e.pointerId];
+        var n = Object.keys(pointers).length;
+        if (n === 0) {
+          if (gesture && gesture.mode !== "tap") setTimeout(function () { justDragged = false; }, 60); else justDragged = false;
+          gesture = null; map.classList.remove("is-dragging");
+        } else if (n === 1 && gesture && gesture.mode === "pinch") {
+          // continue as a pan with the remaining finger
+          var id = Object.keys(pointers)[0];
+          gesture = { mode: "pan", sx: pointers[id].x, sy: pointers[id].y, cx: cam.x, cy: cam.y };
+        }
+      }
+      map.addEventListener("pointerup", endPointer);
+      map.addEventListener("pointercancel", endPointer);
+      map.addEventListener("lostpointercapture", endPointer);
+      // a drag or pinch must never count as a tap on a stop
+      map.addEventListener("click", function (e) {
+        if (justDragged) { e.stopPropagation(); e.preventDefault(); }
+      }, true);
+      map.addEventListener("wheel", function (e) {
+        if (sheetOpen || traveling) return;
+        e.preventDefault();
+        cancelAnimationFrame(camAnim);
+        var unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? 400 : 1);
+        var f = Math.exp(-e.deltaY * unit * (e.ctrlKey ? 0.012 : 0.0016));
+        zoomAtUnits(toUnits(e.clientX, e.clientY), cam.z * f);
+        hideHint();
+      }, { passive: false });
+      $("zoom-in").addEventListener("click", function () { zoomStep(1.6); hideHint(); });
+      $("zoom-out").addEventListener("click", function () { zoomStep(1 / 1.6); hideHint(); });
+      $("zoom-reset").addEventListener("click", function () { resetView(false); });
+
       /* ---------------- Travel ---------------- */
       var traveling = false;
       function onLandmark(i) {
@@ -1081,6 +1191,7 @@
       function travel() {
         if (traveling || sheetOpen || state.view !== "map" || state.at >= STOPS.length) return;
         traveling = true;
+        if (cam.z > 1.02) resetView(false);
         var L = legs[state.at];
         var dur = reduceMotion ? 50 : Math.min(1500, Math.max(850, L.len * 5));
         var t0 = null;
@@ -1220,6 +1331,8 @@
 
       function startQuest() {
         state = freshState();
+        state.startedAt = Date.now();
+        resetView(true);
         show("map");
         drawMap();
         refreshMap();
@@ -1232,29 +1345,25 @@
         if (!state.finishedAt) {
           state.finishedAt = Date.now();
           var correctN = state.results.filter(function (r) { return r && r.correct; }).length;
-          track("quest_complete", { score: state.score, correct: correctN });
+          track("quest_complete", { score: state.score, correct: correctN, seconds: state.startedAt ? Math.round((state.finishedAt - state.startedAt) / 1000) : 0 });
         }
         show("final");
         renderFinal(true);
       }
 
-      var clockTimer;
+      function fmtTime(ms) {
+        var t = Math.max(0, Math.round(ms / 1000)), m = Math.floor(t / 60), sec = t % 60;
+        return m + ":" + (sec < 10 ? "0" : "") + sec;
+      }
       function renderFinal(animate) {
         var correctN = state.results.filter(function (r) { return r && r.correct; }).length;
         var rank = RANKS.filter(function (r) { return correctN >= r.min; })[0];
         $("final-rank").textContent = rank.title;
         $("final-rank-copy").textContent = rank.copy;
-        $("claim-code").textContent = state.code;
-        $("claim-correct").textContent = correctN + "/6 correct";
-        renderSlots($("final-code"));
-        var ul = $("unlocked"); ul.innerHTML = "";
-        STOPS.forEach(function (s) {
-          var li = document.createElement("li");
-          li.innerHTML = ICONS[s.id] + "<span></span>";
-          li.lastChild.textContent = s.feature;
-          ul.appendChild(li);
-        });
-        $("claim").classList.toggle("claimed", isClaimed(state.code));
+        $("final-correct").textContent = correctN + "/" + STOPS.length;
+        var tStat = $("final-time").parentNode;
+        if (state.startedAt && state.finishedAt) { $("final-time").textContent = fmtTime(state.finishedAt - state.startedAt); tStat.hidden = false; }
+        else { tStat.hidden = true; }
         var target = state.score, out = $("final-score");
         if (animate && !reduceMotion) {
           var t0 = null;
@@ -1266,12 +1375,6 @@
           })(performance.now());
           confetti();
         } else { out.textContent = target; }
-        clearInterval(clockTimer);
-        var tickClock = function () {
-          var d = new Date();
-          $("claim-clock").textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (n) { return (n < 10 ? "0" : "") + n; }).join(":");
-        };
-        tickClock(); clockTimer = setInterval(tickClock, 1000);
         window.scrollTo(0, 0); $("view-final").scrollTop = 0;
       }
 
@@ -1299,17 +1402,11 @@
       $("continue-btn").addEventListener("click", afterResult);
       $("replay-btn").addEventListener("click", function () {
         track("quest_replay", {});
-        clearInterval(clockTimer);
         try { sessionStorage.removeItem(STORE_KEY); } catch (e) {}
         state = freshState();
         show("intro");
       });
-      $("playbook-link").addEventListener("click", function () { track("quest_playbook_click", {}); });
-      $("staff-btn").addEventListener("click", function () {
-        setClaimed(state.code);
-        $("claim").classList.add("claimed");
-        track("quest_gift_claimed", { score: state.score });
-      });
+      $("try-link").addEventListener("click", function () { track("quest_try_rae_click", { score: state.score }); });
 
       document.addEventListener("keydown", function (e) {
         if (state.view !== "map") return;
@@ -1320,6 +1417,9 @@
           }
           return;
         }
+        if (e.key === "+" || e.key === "=") { zoomStep(1.6); return; }
+        if (e.key === "-" || e.key === "_") { zoomStep(1 / 1.6); return; }
+        if (e.key === "0") { resetView(false); return; }
         var moveKeys = ["ArrowUp", "ArrowRight", "ArrowLeft", "ArrowDown", "w", "a", "s", "d", "W", "A", "S", "D"];
         var ae = document.activeElement;
         var onControl = ae && (ae.tagName === "BUTTON" || ae.tagName === "A" || (ae.classList && ae.classList.contains("lm")));
